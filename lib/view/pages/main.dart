@@ -14,10 +14,10 @@ import 'package:nativ/firebase_options.dart';
 import 'package:nativ/view/widgets/main_map.dart';
 
 void main() async {
+  await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final authRepository = AuthRepository();
-  dotenv.load();
   runApp(MyApp(authRepository: authRepository));
 }
 
@@ -62,7 +62,7 @@ class HomeScreen extends StatefulWidget {
 
   static Page page() => const MaterialPage<void>(
           child: HomeScreen(
-        title: 'Naativ',
+        title: 'Nativ',
       ));
 
   @override

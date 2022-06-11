@@ -107,24 +107,14 @@ class _MainMapState extends State<MainMap> {
     final LatLng placeCoordinates = LatLng(
         place.geometry.locationResult.lat, place.geometry.locationResult.lng);
 
-    Scaffold.of(context).showBottomSheet((context) => BottomSheet(
-          onClosing: () {},
-          builder: (_) {
-            return DraggableScrollableSheet(
-                builder: ((context, scrollController) {
-              return Container();
-            }));
-          },
-        ));
-
-    // * Set zoom based on place type.
-    if (place.type.contains('country') || place.type.contains('continent')) {
-      controller.move(placeCoordinates, 5);
-    } else if (place.type.contains('locality') ||
-        place.type.contains('postal')) {
+    // * Set zoom based on place types.
+    if (place.types.contains('locality') ||
+        place.types.contains('administrative_area_level_3') ||
+        place.types.contains('sublocality') ||
+        place.types.contains('postal_code')) {
       controller.move(placeCoordinates, 10);
     } else {
-      controller.move(placeCoordinates, 16.0);
+      controller.move(placeCoordinates, 5);
     }
   }
 }

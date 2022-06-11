@@ -9,7 +9,7 @@ class PlacesService {
 
   Future<List<PlaceSearch>> getAutoComplete(String search) async {
     var url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&types=&key=$mag');
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&types=(regions)&types=(cities)&key=$mag');
 
     var response = await http.get(url);
     var json = convert.jsonDecode(response.body);

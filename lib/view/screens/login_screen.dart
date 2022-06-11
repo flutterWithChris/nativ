@@ -74,12 +74,15 @@ class LoginForm extends StatelessWidget {
                     ),
                   ),
                   const _EmailInput(),
+                  const SizedBox(
+                    height: 15,
+                  ),
                   const _PasswordInput(),
                   const SizedBox(
                     height: 15,
                   ),
                   const LoginButton(),
-                  ElevatedButton(
+                  TextButton(
                       onPressed: () {
                         Navigator.of(context).push<void>(SignupScreen.route());
                       },
