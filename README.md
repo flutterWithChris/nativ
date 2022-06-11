@@ -1,2 +1,5 @@
 # nativ
-An app to connect travelers with locals for a more authentic, easier, &amp; safer trip.
+
+A mobile app designed to connect travelers abroad with locals AKA Nativ's. Making travel plans easier, safer, & more authentic.
+
+Built on Flutter & Firebase.

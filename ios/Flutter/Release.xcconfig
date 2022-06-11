@@ -1,0 +1,2 @@
+#include "Generated.xcconfig"
+GOOGLE_MAPS_MAGNOLIA=$(GOOGLE_MAPS_MAGNOLIA)
