@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:nativ/bloc/geolocation/bloc/geolocation_bloc.dart';
 import 'package:nativ/bloc/location/location_bloc.dart';
 import 'package:nativ/data/model/place.dart';
 import 'package:nativ/view/widgets/location_searchbar.dart';
@@ -12,10 +13,7 @@ import 'package:nativ/view/widgets/location_searchbar.dart';
 class MainMap extends StatefulWidget {
   const MainMap({
     Key? key,
-    required this.mapController,
   }) : super(key: key);
-
-  final MapController mapController;
 
   @override
   State<MainMap> createState() => _MainMapState();
@@ -24,17 +22,17 @@ class MainMap extends StatefulWidget {
 class _MainMapState extends State<MainMap> {
   late StreamSubscription locationSubscription;
   late StreamSubscription currentLocationListener;
+  Stream<LatLng>? currentLocation;
+  static Stream<LocationMarkerPosition>? _markerPosition;
+  final MapController mapController = MapController();
 
   @override
   void initState() {
     final LocationBloc locationBloc = BlocProvider.of<LocationBloc>(context);
-
     super.initState();
     locationSubscription = locationBloc.selectedLocation.stream.listen((place) {
-      _goToPlace(place, widget.mapController);
+      _goToPlace(place, mapController);
     });
-    currentLocationListener =
-        locationBloc.currentLocationStream.listen((currentLocationData) {});
   }
 
   @override
@@ -43,57 +41,60 @@ class _MainMapState extends State<MainMap> {
     return Stack(
       alignment: AlignmentDirectional.topCenter,
       children: [
-        StreamBuilder<LocationMarkerPosition>(
-            stream: locationBloc.getCurrentMarkerPosition,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                var data = snapshot.data;
-                LatLng currentLocation =
-                    LatLng(snapshot.data!.latitude, snapshot.data!.longitude);
-                return FlutterMap(
-                  mapController: widget.mapController,
-                  options: MapOptions(
-                    center: currentLocation,
-                    zoom: 11.0,
-                    interactiveFlags:
-                        InteractiveFlag.pinchZoom | InteractiveFlag.drag,
-                  ),
-                  layers: [
-                    TileLayerOptions(
-                      urlTemplate: dotenv.get('MAPBOX_API_URL'),
-                      additionalOptions: {
-                        'accessToken': dotenv.get('MAPBOX_MAGNOLIA'),
-                        'id': 'mapbox.mapbox-streets-v8',
-                      },
-                    ),
-                    MarkerLayerOptions(
-                      markers: [
-                        Marker(
-                          width: 20.0,
-                          height: 20.0,
-                          point: currentLocation,
-                          builder: (ctx) => Container(
-                            child: const FittedBox(
-                                child: CircleAvatar(
-                              radius: 60,
-                              backgroundColor: Colors.white,
-                              child: CircleAvatar(
-                                radius: 45,
-                                backgroundColor: Colors.blue,
-                              ),
-                            )),
+        BlocBuilder<GeolocationBloc, GeolocationState>(
+            builder: (context, state) {
+          if (state is GeolocationLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (state is GeolocationLoaded) {
+            return FlutterMap(
+              mapController: mapController,
+              options: MapOptions(
+                center:
+                    LatLng(state.position.latitude, state.position.longitude),
+                zoom: 11.0,
+                interactiveFlags:
+                    InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+              ),
+              layers: [
+                TileLayerOptions(
+                  urlTemplate: dotenv.get('MAPBOX_API_URL'),
+                  additionalOptions: {
+                    'accessToken': dotenv.get('MAPBOX_MAGNOLIA'),
+                    'id': 'mapbox.mapbox-streets-v8',
+                  },
+                ),
+                MarkerLayerOptions(
+                  markers: [
+                    Marker(
+                      width: 20.0,
+                      height: 20.0,
+                      point: LatLng(
+                          state.position.latitude, state.position.longitude),
+                      builder: (ctx) => Container(
+                        child: const FittedBox(
+                            child: CircleAvatar(
+                          radius: 60,
+                          backgroundColor: Colors.white,
+                          child: CircleAvatar(
+                            radius: 45,
+                            backgroundColor: Colors.blue,
                           ),
-                        ),
-                      ],
+                        )),
+                      ),
                     ),
                   ],
-                );
-              } else {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            }),
+                ),
+              ],
+            );
+          } else {
+            return const Center(
+              child: Text('Something Went Wrong...'),
+            );
+          }
+        }),
         const IntrinsicHeight(child: LocationSearchBar()),
       ],
     );
