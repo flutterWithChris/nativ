@@ -54,6 +54,8 @@ dependencies:
   flutterfire_ui: ^0.4.1+2
   equatable: ^2.0.3
   flow_builder: ^0.0.9
+  get: ^4.6.5
+  bottom_navy_bar: ^6.0.0
 
 dev_dependencies:
   flutter_test:

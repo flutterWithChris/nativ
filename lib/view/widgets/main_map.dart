@@ -50,46 +50,43 @@ class _MainMapState extends State<MainMap> {
                 var data = snapshot.data;
                 LatLng currentLocation =
                     LatLng(snapshot.data!.latitude, snapshot.data!.longitude);
-                return BlocProvider(
-                  create: (context) => LocationBloc(),
-                  child: FlutterMap(
-                    mapController: widget.mapController,
-                    options: MapOptions(
-                      center: currentLocation,
-                      zoom: 11.0,
-                      interactiveFlags:
-                          InteractiveFlag.pinchZoom | InteractiveFlag.drag,
-                    ),
-                    layers: [
-                      TileLayerOptions(
-                        urlTemplate: dotenv.get('MAPBOX_API_URL'),
-                        additionalOptions: {
-                          'accessToken': dotenv.get('MAPBOX_MAGNOLIA'),
-                          'id': 'mapbox.mapbox-streets-v8',
-                        },
-                      ),
-                      MarkerLayerOptions(
-                        markers: [
-                          Marker(
-                            width: 20.0,
-                            height: 20.0,
-                            point: currentLocation,
-                            builder: (ctx) => Container(
-                              child: const FittedBox(
-                                  child: CircleAvatar(
-                                radius: 60,
-                                backgroundColor: Colors.white,
-                                child: CircleAvatar(
-                                  radius: 45,
-                                  backgroundColor: Colors.blue,
-                                ),
-                              )),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                return FlutterMap(
+                  mapController: widget.mapController,
+                  options: MapOptions(
+                    center: currentLocation,
+                    zoom: 11.0,
+                    interactiveFlags:
+                        InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                   ),
+                  layers: [
+                    TileLayerOptions(
+                      urlTemplate: dotenv.get('MAPBOX_API_URL'),
+                      additionalOptions: {
+                        'accessToken': dotenv.get('MAPBOX_MAGNOLIA'),
+                        'id': 'mapbox.mapbox-streets-v8',
+                      },
+                    ),
+                    MarkerLayerOptions(
+                      markers: [
+                        Marker(
+                          width: 20.0,
+                          height: 20.0,
+                          point: currentLocation,
+                          builder: (ctx) => Container(
+                            child: const FittedBox(
+                                child: CircleAvatar(
+                              radius: 60,
+                              backgroundColor: Colors.white,
+                              child: CircleAvatar(
+                                radius: 45,
+                                backgroundColor: Colors.blue,
+                              ),
+                            )),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 );
               } else {
                 return const Center(
@@ -117,22 +114,4 @@ class _MainMapState extends State<MainMap> {
       controller.move(placeCoordinates, 5);
     }
   }
-}
-
-// * Create bounds for camera.
-LatLngBounds createBounds(List<LatLng> positions) {
-  final southWestLat = positions
-      .map((p) => p.latitude)
-      .reduce((value, element) => value < element ? value : element);
-  final southWestLng = positions
-      .map((p) => p.longitude)
-      .reduce((value, element) => value < element ? value : element);
-  final northEastLat = positions
-      .map((p) => p.latitude)
-      .reduce((value, element) => value < element ? value : element);
-  final northEastLng = positions
-      .map((p) => p.longitude)
-      .reduce((value, element) => value < element ? value : element);
-  return LatLngBounds(
-      LatLng(southWestLat, southWestLng), LatLng(northEastLat, northEastLng));
 }
