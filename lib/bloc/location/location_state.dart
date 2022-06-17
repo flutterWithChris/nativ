@@ -7,6 +7,8 @@ class LocationInitial extends LocationState {}
 
 class LocationSearchStarted extends LocationState {}
 
+class LocationLoading extends LocationState {}
+
 class LocationLoaded extends LocationState {}
 
 class LocationScrollingUp extends LocationState {}

@@ -29,7 +29,9 @@ class AuthRepository {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
-    } catch (_) {}
+    } catch (_) {
+      throw Exception('Failed Login!');
+    }
   }
 
   Future<void> logout() async {

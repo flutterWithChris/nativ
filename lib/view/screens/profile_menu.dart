@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:nativ/bloc/app/app_bloc.dart';
 
 class ProfileMenu extends StatelessWidget {
   const ProfileMenu({Key? key}) : super(key: key);
@@ -14,81 +16,123 @@ class ProfileMenu extends StatelessWidget {
         child: ListView(
           children: [
             // * Header Image
-            SizedBox(
-              height: 200,
+            AspectRatio(
+              aspectRatio: 1.91 / 1,
               child: Image.network(
                 'https://static.euronews.com/articles/stories/06/25/84/50/1200x675_cmsv2_f71b6679-918e-5672-8b87-8f3e17af759e-6258450.jpg',
                 fit: BoxFit.cover,
               ),
             ),
+
             // * Main Content
             Padding(
-              padding: const EdgeInsets.all(5.0),
+              padding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 12),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const MainProfileInfo(),
-                  Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: const [
-                        Icon(
-                          FontAwesomeIcons.chevronLeft,
-                          color: Colors.black38,
-                        ),
-                        FractionallySizedBox(
-                            widthFactor: 0.80, child: ReviewCarousel()),
-                        Icon(
-                          FontAwesomeIcons.chevronRight,
-                          color: Colors.black38,
-                        ),
-                      ]),
-                  Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Container(
-                      //    transformAlignment: Alignment.center,
-                      alignment: Alignment.center,
-                      width: 400,
-                      height: 225,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black54),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(20))),
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Wrap(spacing: 15,
-                            // crossAxisAlignment: WrapCrossAlignment.center,
-                            children: const [
-                              SpecialtyIcon(
-                                icon: FontAwesomeIcons.utensils,
-                                label: 'Food',
-                              ),
-                              SpecialtyIcon(
-                                icon: FontAwesomeIcons.trainTram,
-                                label: 'Public Transport',
-                              ),
-                              SpecialtyIcon(
-                                icon: FontAwesomeIcons.ticket,
-                                label: 'Entertainment',
-                              ),
-                              SpecialtyIcon(
-                                icon: FontAwesomeIcons.camera,
-                                label: 'Photo Ops',
-                              ),
-                              SpecialtyIcon(
-                                icon: FontAwesomeIcons.basketShopping,
-                                label: 'Shopping',
-                              ),
-                              SpecialtyIcon(
-                                icon: FontAwesomeIcons.route,
-                                label: 'Navigation',
-                              ),
-                            ]),
+                  Stack(
+                    alignment: AlignmentDirectional.topEnd,
+                    children: const [
+                      MainProfileInfo(),
+                      Padding(
+                        padding: EdgeInsets.only(right: 20),
+                        child: ProfileIcon(),
                       ),
-                    ),
+                    ],
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 20, bottom: 20),
+                    child: PublicReviews(),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(24.0),
+                    child: MySpecialties(),
                   )
                 ],
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class PublicReviews extends StatelessWidget {
+  const PublicReviews({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: const [
+      Icon(
+        FontAwesomeIcons.chevronLeft,
+        color: Colors.black38,
+      ),
+      FractionallySizedBox(widthFactor: 0.80, child: ReviewCarousel()),
+      Icon(
+        FontAwesomeIcons.chevronRight,
+        color: Colors.black38,
+      ),
+    ]);
+  }
+}
+
+class MySpecialties extends StatelessWidget {
+  const MySpecialties({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      //    transformAlignment: Alignment.center,
+      alignment: Alignment.center,
+      width: 400,
+      height: 275,
+      decoration: BoxDecoration(
+          border: Border.all(color: Colors.black54),
+          borderRadius: const BorderRadius.all(Radius.circular(20))),
+      child: Align(
+        alignment: Alignment.center,
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(12.0),
+              child: Text(
+                'My Specialties',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+            ),
+            Wrap(spacing: 15,
+                // crossAxisAlignment: WrapCrossAlignment.center,
+                children: const [
+                  SpecialtyIcon(
+                    icon: FontAwesomeIcons.utensils,
+                    label: 'Food',
+                  ),
+                  SpecialtyIcon(
+                    icon: FontAwesomeIcons.trainTram,
+                    label: 'Public Transport',
+                  ),
+                  SpecialtyIcon(
+                    icon: FontAwesomeIcons.ticket,
+                    label: 'Entertainment',
+                  ),
+                  SpecialtyIcon(
+                    icon: FontAwesomeIcons.camera,
+                    label: 'Photo Ops',
+                  ),
+                  SpecialtyIcon(
+                    icon: FontAwesomeIcons.basketShopping,
+                    label: 'Shopping',
+                  ),
+                  SpecialtyIcon(
+                    icon: FontAwesomeIcons.route,
+                    label: 'Navigation',
+                  ),
+                ]),
           ],
         ),
       ),
@@ -116,10 +160,10 @@ class SpecialtyIcon extends StatelessWidget {
           Icon(
             icon,
             size: 40,
-            color: Colors.black87,
+            color: Colors.cyan,
           ),
           const SizedBox(
-            height: 5,
+            height: 7,
           ),
           Text(
             label,
@@ -136,22 +180,24 @@ class ReviewCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(children: const [
-        CircleAvatar(
-          radius: 30,
-          backgroundImage: NetworkImage(
-              'https://bustickets.com/wp-content/uploads/2019/09/solo-travel-backpack-tips.jpg'),
-        ),
-        SizedBox(
-          width: 15,
-        ),
-        Flexible(
-          child: Text(
-              '“Thorin is the BEST nativ around. He took us to incredible & authentic restaurants & guided an awesome hike.” \n -Jane Walenda, Traveler'),
-        )
-      ]),
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(children: const [
+          CircleAvatar(
+            radius: 30,
+            backgroundImage: NetworkImage(
+                'https://bustickets.com/wp-content/uploads/2019/09/solo-travel-backpack-tips.jpg'),
+          ),
+          SizedBox(
+            width: 15,
+          ),
+          Flexible(
+            child: Text(
+                '“Thorin is the BEST nativ around. He took us to incredible & authentic restaurants & guided an awesome hike.” \n -Jane Walenda, Traveler'),
+          )
+        ]),
+      ),
     );
   }
 }
@@ -163,17 +209,25 @@ class MainProfileInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.select((AppBloc bloc) => bloc.state.user);
+
     return ListTile(
       visualDensity: VisualDensity.comfortable,
-      leading: const CircleAvatar(
-        radius: 30.0,
-        backgroundImage: NetworkImage(
-          'https://www.zbrushcentral.com/uploads/default/original/4X/7/9/6/7966865da1c1203fd5250ab05bb1fc00ba8133e9.jpeg',
-        ),
-      ),
-      title: const Text(
-        'Thorin Oakenshield',
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      //leading: ProfileIcon(),
+      title: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 10,
+        children: const [
+          Text(
+            'Thorin Oakenshield',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          Icon(
+            FontAwesomeIcons.circleCheck,
+            color: Colors.blueAccent,
+            size: 20,
+          )
+        ],
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,7 +238,7 @@ class MainProfileInfo extends StatelessWidget {
               children: const [
                 Text('Auckland, NZ'),
                 SizedBox(
-                  height: 25,
+                  height: 30,
                   child: Chip(
                     backgroundColor: Colors.orange,
                     label: Text(
@@ -205,28 +259,66 @@ class MainProfileInfo extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                    shape: const StadiumBorder(),
-                    fixedSize: const Size(400, 35),
-                    primary: Colors.black54),
-                child: const Text(
-                  'Book Me',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                onPressed: () {
+                  print('pressed');
+                },
+                style: Theme.of(context).elevatedButtonTheme.style,
+                child: Wrap(
+                  spacing: 5,
+                  children: const [
+                    Text(
+                      'Connect ',
+                    ),
+                    Icon(FontAwesomeIcons.connectdevelop)
+                  ],
                 )),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 10),
-            child: SizedBox(
-              child: Wrap(spacing: 20, children: const [
-                Icon(FontAwesomeIcons.instagram),
-                Icon(FontAwesomeIcons.facebook),
-                Icon(FontAwesomeIcons.tiktok),
-                Icon(FontAwesomeIcons.twitter),
-              ]),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                OutlinedButton(
+                  onPressed: () {},
+                  child: Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 10,
+                      children: const [
+                        Icon(
+                          FontAwesomeIcons.paperPlane,
+                          size: 20,
+                        ),
+                        Text('Message Me')
+                      ]),
+                ),
+                SizedBox(
+                  child: Wrap(spacing: 20, children: const [
+                    Icon(FontAwesomeIcons.instagram),
+                    Icon(FontAwesomeIcons.facebook),
+                    Icon(FontAwesomeIcons.tiktok),
+                    Icon(FontAwesomeIcons.twitter),
+                  ]),
+                ),
+              ],
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class ProfileIcon extends StatelessWidget {
+  const ProfileIcon({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const CircleAvatar(
+      radius: 30.0,
+      backgroundImage: NetworkImage(
+        'https://www.zbrushcentral.com/uploads/default/original/4X/7/9/6/7966865da1c1203fd5250ab05bb1fc00ba8133e9.jpeg',
       ),
     );
   }

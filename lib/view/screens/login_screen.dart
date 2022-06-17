@@ -33,7 +33,9 @@ class _SignInState extends State<LoginScreen> {
 }
 
 class LoginForm extends StatelessWidget {
-  const LoginForm({
+  final _formKey = GlobalKey<FormState>();
+
+  LoginForm({
     Key? key,
     required this.emailController,
     required this.passwordController,
@@ -49,6 +51,7 @@ class LoginForm extends StatelessWidget {
         // TODO: implement listener
         if (state.status == LoginStatus.error) {
           // TODO: Implement Error Handler
+          _showSnackBar(context, 'test');
         }
       },
       child: Center(
@@ -64,30 +67,36 @@ class LoginForm extends StatelessWidget {
             Container(
               width: MediaQuery.of(context).size.width,
               color: Colors.white38,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: CircleAvatar(
-                      radius: 40.0,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: CircleAvatar(
+                        radius: 40.0,
+                      ),
                     ),
-                  ),
-                  const _EmailInput(),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  const _PasswordInput(),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  const LoginButton(),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.of(context).push<void>(SignupScreen.route());
-                      },
-                      child: const Text('Signup')),
-                ],
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        SignupButton(),
+                        _EmailInput(),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        _PasswordInput(),
+                        SizedBox(
+                          height: 15,
+                        )
+                      ],
+                    ),
+                    _loginButton(),
+                    TextButton(
+                        onPressed: () {}, child: const Text('Forgot Password?'))
+                  ],
+                ),
               ),
             ),
           ],
@@ -95,13 +104,8 @@ class LoginForm extends StatelessWidget {
       ),
     );
   }
-}
 
-class LoginButton extends StatelessWidget {
-  const LoginButton({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _loginButton() {
     return BlocBuilder<LoginCubit, LoginState>(
       buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
@@ -112,10 +116,46 @@ class LoginButton extends StatelessWidget {
                   fixedSize: const Size(250, 40),
                 ),
                 onPressed: () {
-                  context.read<LoginCubit>().logInWithCredentials();
+                  if (_formKey.currentState!.validate()) {
+                    context.read<LoginCubit>().logInWithCredentials();
+                  } else {
+                    _showSnackBar(context, 'Login Error!');
+                  }
                 },
-                child: const Text('Login ->'));
+                child: const Text('Sign in'));
       },
+    );
+  }
+}
+
+class SignupButton extends StatelessWidget {
+  const SignupButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        Navigator.of(context).push<void>(SignupScreen.route());
+      },
+      child: const Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+              text: 'New to Nativ? ',
+              style: TextStyle(
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+            TextSpan(
+              text: 'Sign Up',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        textAlign: TextAlign.left,
+      ),
     );
   }
 }
@@ -133,12 +173,13 @@ class _EmailInput extends StatelessWidget {
       child: BlocBuilder<LoginCubit, LoginState>(
         buildWhen: (previous, current) => previous.email != current.email,
         builder: (context, state) {
-          return TextField(
+          return TextFormField(
+            validator: (value) => state.isEmailValid ? null : 'Invalid Email!',
             onChanged: (value) =>
                 context.read<LoginCubit>().emailChanged(value),
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
-              label: const Text('Email'),
+              label: const Text('Email Address'),
               filled: true,
               fillColor: Colors.white70,
               border: OutlineInputBorder(
@@ -166,7 +207,9 @@ class _PasswordInput extends StatelessWidget {
       child: BlocBuilder<LoginCubit, LoginState>(
         buildWhen: (previous, current) => previous.password != current.password,
         builder: (context, state) {
-          return TextField(
+          return TextFormField(
+            validator: (value) =>
+                state.isEmailValid ? null : 'Password is too short',
             obscureText: true,
             onChanged: (value) =>
                 context.read<LoginCubit>().passwordChanged(value),
@@ -185,4 +228,12 @@ class _PasswordInput extends StatelessWidget {
       ),
     );
   }
+}
+
+void _showSnackBar(BuildContext context, String message) {
+  final snackBar = SnackBar(
+    content: Text(message),
+    backgroundColor: Colors.red,
+  );
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }

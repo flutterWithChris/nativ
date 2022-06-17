@@ -43,7 +43,8 @@ class LocationBloc extends Bloc<LocationEvent, LocationState>
     );
     on<LocationDismissed>((event, emit) => emit(ResetLocationView()));
     on<LocationAttributeSelected>((event, emit) => {print('selected')});
-    on(<LocationSearch>(event, emit) => emit(LocationSearchStarted()));
+    on<LocationSearch>((event, emit) => emit(LocationSearchStarted()));
+    on<LocationSearchSubmit>((event, emit) => emit(LocationLoading()));
     //on(<AddLocation>(event, emit) => emit(MarkerPlaced()));
   }
 }

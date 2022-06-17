@@ -7,6 +7,8 @@ class DeleteLocation extends LocationEvent {}
 
 class LocationSearch extends LocationEvent {}
 
+class LocationSearchSubmit extends LocationEvent {}
+
 class LocationClicked extends LocationEvent {}
 
 class LocationDismissed extends LocationEvent {}

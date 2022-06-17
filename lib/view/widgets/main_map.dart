@@ -38,18 +38,18 @@ class _MainMapState extends State<MainMap> {
   @override
   Widget build(BuildContext context) {
     var locationBloc = BlocProvider.of<LocationBloc>(context);
-    return Stack(
-      alignment: AlignmentDirectional.topCenter,
-      children: [
-        BlocBuilder<GeolocationBloc, GeolocationState>(
-            builder: (context, state) {
-          if (state is GeolocationLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (state is GeolocationLoaded) {
-            return FlutterMap(
+    return BlocBuilder<GeolocationBloc, GeolocationState>(
+        builder: (context, state) {
+      if (state is GeolocationLoading) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      }
+      if (state is GeolocationLoaded) {
+        return Stack(
+          alignment: AlignmentDirectional.topCenter,
+          children: [
+            FlutterMap(
               mapController: mapController,
               options: MapOptions(
                 center:
@@ -88,16 +88,18 @@ class _MainMapState extends State<MainMap> {
                   ],
                 ),
               ],
-            );
-          } else {
-            return const Center(
-              child: Text('Something Went Wrong...'),
-            );
-          }
-        }),
-        const IntrinsicHeight(child: LocationSearchBar()),
-      ],
-    );
+            ),
+            const IntrinsicHeight(
+              child: LocationSearchBar(),
+            )
+          ],
+        );
+      } else {
+        return const Center(
+          child: Text('Something Went Wrong...'),
+        );
+      }
+    });
   }
 
 // * Move camera to searched place.

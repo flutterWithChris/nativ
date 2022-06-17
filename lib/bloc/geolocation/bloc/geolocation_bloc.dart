@@ -19,7 +19,6 @@ class GeolocationBloc extends Bloc<GeolocationEvent, GeolocationState> {
       _geoLocationSubscription?.cancel();
       final Position position =
           await _geoLocationRepository.getCurrentLocation();
-
       add(UpdateGeolocation(position: position));
     });
     on<UpdateGeolocation>((event, emit) {

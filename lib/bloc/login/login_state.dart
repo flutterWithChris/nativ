@@ -4,6 +4,8 @@ enum LoginStatus { initial, submitting, success, error }
 
 class LoginState extends Equatable {
   final String email, password;
+  bool get isEmailValid => email.contains('@');
+  bool get isPasswordValid => password.length > 5;
   final LoginStatus status;
 
   const LoginState({
