@@ -5,6 +5,10 @@ abstract class LocationEvent {}
 
 class DeleteLocation extends LocationEvent {}
 
+class LocationSearchbarClicked extends LocationEvent {}
+
+class LocationSearchbarClosed extends LocationEvent {}
+
 class LocationSearch extends LocationEvent {}
 
 class LocationSearchSubmit extends LocationEvent {}

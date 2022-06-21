@@ -87,12 +87,12 @@ class AppView extends StatelessWidget {
           // TODO: darkTheme: ThemeData(),
           theme: ThemeData(
             chipTheme: const ChipThemeData(),
-            //primaryColor: Colors.white,
-            colorSchemeSeed: const Color.fromARGB(255, 76, 94, 255),
+            primaryColor: Colors.white,
+            // colorSchemeSeed: const Color.fromARGB(255, 76, 94, 255),
             useMaterial3: true,
             elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
-                fixedSize: const Size(400, 35),
+                fixedSize: const Size(250, 35),
                 textStyle:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),

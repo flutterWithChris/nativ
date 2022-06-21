@@ -44,7 +44,14 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
       height: 48,
       scrollPadding: const EdgeInsets.only(top: 5, bottom: 5),
       elevation: 1.0,
-      onFocusChanged: (focus) {},
+      onFocusChanged: (focus) {
+        if (focus == true) {
+          locationBloc.add(LocationSearchbarClicked());
+          print("Searchbar Focused**");
+        } else if (focus == false) {
+          locationBloc.add(LocationSearchbarClosed());
+        }
+      },
       onSubmitted: (query) {
         locationBloc
             .setSelectedLocation(locationBloc.searchResults.first.placeId!);
@@ -52,10 +59,13 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
         locationBloc.add(LocationSearchSubmit());
 
         controller.close();
+        //locationBloc.add(LocationSearchbarClosed());
       },
       onQueryChanged: (query) {
-        locationBloc.searchPlaces(query);
-        BlocProvider.of<LocationBloc>(context).add(LocationSearch());
+        if (query != '') {
+          locationBloc.searchPlaces(query);
+          BlocProvider.of<LocationBloc>(context).add(LocationSearch());
+        }
 
         if (query == '') {
           controller.close();
@@ -67,53 +77,50 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
       builder: (context, transition) {
         return Stack(
           children: [
-            SizedBox(
-              height: 400,
-              child: BlocBuilder<LocationBloc, LocationState>(
-                builder: (context, state) {
-                  if (state is LocationSearchStarted) {
-                    return SizedBox(
-                      height: 400,
-                      child: ListView.builder(
-                        itemCount: locationBloc.searchResults.length,
-                        itemBuilder: (context, index) {
-                          if (locationBloc.searchResults.isNotEmpty) {
-                            return Column(
-                              children: [
-                                ListTile(
-                                  onTap: () => {
-                                    locationBloc.setSelectedLocation(
-                                        locationBloc
-                                            .searchResults[index].placeId!),
-                                    locationBloc.add(LocationSearchSubmit()),
-                                    controller.close()
-                                  },
-                                  title: Text(
-                                    locationBloc
-                                        .searchResults[index].description!,
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
+            BlocBuilder<LocationBloc, LocationState>(
+              builder: (context, state) {
+                if (state is LocationSearchStarted) {
+                  return SizedBox(
+                    height: 400,
+                    child: ListView.builder(
+                      itemCount: locationBloc.searchResults.length,
+                      itemBuilder: (context, index) {
+                        if (locationBloc.searchResults.isNotEmpty) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ListTile(
+                                onTap: () => {
+                                  locationBloc.setSelectedLocation(locationBloc
+                                      .searchResults[index].placeId!),
+                                  locationBloc.add(LocationSearchSubmit()),
+                                  controller.close(),
+                                },
+                                title: Text(
+                                  locationBloc
+                                      .searchResults[index].description!,
+                                  style: const TextStyle(color: Colors.white),
                                 ),
-                                const Divider(
-                                  color: Colors.white,
-                                ),
-                              ],
-                            );
-                          }
-                          return const Center(
-                            child: Text('No results found..'),
+                              ),
+                              const Divider(
+                                color: Colors.white,
+                              ),
+                            ],
                           );
-                        },
-                      ),
-                    );
-                  }
-                  return const Center(
-                      child: Text(
-                    'No results found..',
-                    style: TextStyle(color: Colors.white),
-                  ));
-                },
-              ),
+                        }
+                        return const Center(
+                          child: Text('No results found..'),
+                        );
+                      },
+                    ),
+                  );
+                }
+                return const Center(
+                    child: Text(
+                  'No results found..',
+                  style: TextStyle(color: Colors.white),
+                ));
+              },
             ),
           ],
         );

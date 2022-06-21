@@ -32,3 +32,7 @@ class LocationCreated extends LocationState {}
 class LocationDeleted extends LocationState {}
 
 class LocationUpdated extends LocationState {}
+
+class LocationSearchbarFocused extends LocationState {}
+
+class LocationSearchbarUnfocused extends LocationState {}

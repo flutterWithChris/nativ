@@ -21,6 +21,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState>
     notifyListeners();
   }
 
+
   setSelectedLocation(String placeId) async {
     selectedLocation.add(await _placesService.getPlace(placeId));
     notifyListeners();
@@ -45,6 +46,10 @@ class LocationBloc extends Bloc<LocationEvent, LocationState>
     on<LocationAttributeSelected>((event, emit) => {print('selected')});
     on<LocationSearch>((event, emit) => emit(LocationSearchStarted()));
     on<LocationSearchSubmit>((event, emit) => emit(LocationLoading()));
+    on<LocationSearchbarClicked>(
+        (event, emit) => emit(LocationSearchbarFocused()));
+    on<LocationSearchbarClosed>(
+        (event, emit) => emit(LocationSearchbarUnfocused()));
     //on(<AddLocation>(event, emit) => emit(MarkerPlaced()));
   }
 }
