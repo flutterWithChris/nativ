@@ -6,7 +6,9 @@ import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:nativ/bloc/location/location_bloc.dart';
 
 class LocationSearchBar extends StatefulWidget {
-  const LocationSearchBar({
+  String? hintText;
+  LocationSearchBar({
+    this.hintText,
     Key? key,
   }) : super(key: key);
 
@@ -38,7 +40,7 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
       backdropColor: Colors.black54,
       automaticallyImplyDrawerHamburger: false,
       controller: controller,
-      hint: 'Search..',
+      hint: widget.hintText ?? 'Search..',
       openAxisAlignment: 0.0,
       width: 500,
       height: 48,
@@ -108,18 +110,29 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
                             ],
                           );
                         }
-                        return const Center(
-                          child: Text('No results found..'),
+                        return const SizedBox(
+                          height: 300,
+                          child: Center(
+                              child: Text(
+                            'No results found..',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          )),
                         );
                       },
                     ),
                   );
                 }
-                return const Center(
-                    child: Text(
-                  'No results found..',
-                  style: TextStyle(color: Colors.white),
-                ));
+                return const SizedBox(
+                  height: 300,
+                  child: Center(
+                      child: Text(
+                    'No results found..',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  )),
+                );
               },
             ),
           ],

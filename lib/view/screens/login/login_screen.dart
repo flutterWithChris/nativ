@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nativ/bloc/login/login_cubit.dart';
 import 'package:nativ/data/repositories/auth_repository.dart';
-import 'package:nativ/view/screens/signup_screen.dart';
+import 'package:nativ/view/screens/signup/signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);

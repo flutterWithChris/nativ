@@ -25,7 +25,8 @@ class SignupCubit extends Cubit<SignupState> {
   }
 
   void isBoth(bool value) {
-    emit(state.copyWith(isNativ: value, isTraveler: value, status: SignupStatus.initial));
+    emit(state.copyWith(
+        isNativ: value, isTraveler: value, status: SignupStatus.initial));
   }
 
   Future<void> signupFormSubmitted() async {
@@ -35,6 +36,8 @@ class SignupCubit extends Cubit<SignupState> {
       await _authRepository.signUp(
           email: state.email, password: state.password);
       emit(state.copyWith(status: SignupStatus.success));
-    } catch (_) {}
+    } catch (_) {
+      emit(state.copyWith(status: SignupStatus.error));
+    }
   }
 }

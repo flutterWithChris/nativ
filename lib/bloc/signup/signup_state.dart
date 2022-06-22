@@ -33,7 +33,7 @@ class SignupState extends Equatable {
 
   SignupState copyWith({
     String? email,
-    password,
+    String? password,
     SignupStatus? status,
     bool? isNativ,
     bool? isTraveler,

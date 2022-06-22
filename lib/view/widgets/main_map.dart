@@ -89,7 +89,7 @@ class _MainMapState extends State<MainMap> {
                 ),
               ],
             ),
-            const IntrinsicHeight(
+            IntrinsicHeight(
               child: LocationSearchBar(),
             )
           ],
