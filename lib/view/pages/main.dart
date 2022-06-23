@@ -133,15 +133,19 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       drawer: Drawer(
         //backgroundColor: Colors.indigo,
-        child: Column(
-          children: const <Widget>[
-            DrawerHeader(
-              child: Text(
-                'Name',
-                style: TextStyle(color: Colors.black87, fontSize: 20),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 50),
+          child: Column(
+            children: const <Widget>[
+              ThemeSwitcher(),
+              DrawerHeader(
+                child: Text(
+                  'Name',
+                  style: TextStyle(color: Colors.black87, fontSize: 20),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: BlocBuilder<BottomNavBarCubit, BottomNavBarState>(

@@ -18,43 +18,48 @@ class SettingsMenu extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                BlocProvider.value(
-                  value: context.read<ThemeBloc>(),
-                  child: DayNightSwitcher(
-                    isDarkModeEnabled:
-                        SharedPrefs().getThemeIndex == 0 ? false : true,
-                    onStateChanged: (isDarkModeEnabled) async {
-                      isDarkModeEnabled
-                          ? BlocProvider.of<ThemeBloc>(context)
-                              .add(const ThemeChanged(theme: AppTheme.Dark))
-                          : BlocProvider.of<ThemeBloc>(context)
-                              .add(const ThemeChanged(theme: AppTheme.Light));
-                    },
-                  ),
-                )
-              ],
-            ),
-            const SettingsMenuItem(
+          children: const [
+            ThemeSwitcher(),
+            SettingsMenuItem(
               leadingIcon: Icon(Icons.person),
               label: 'Account Info',
               trailingIcon: Icon(Icons.arrow_forward),
             ),
-            const SettingsMenuItem(
+            SettingsMenuItem(
               leadingIcon: Icon(Icons.app_settings_alt_outlined),
               label: 'App Settings',
               trailingIcon: Icon(Icons.arrow_forward),
             ),
-            const SettingsMenuItem(
+            SettingsMenuItem(
               leadingIcon: Icon(Icons.question_mark_rounded),
               label: 'Support & Help',
               trailingIcon: Icon(Icons.arrow_forward),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ThemeSwitcher extends StatelessWidget {
+  const ThemeSwitcher({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider.value(
+      value: context.read<ThemeBloc>(),
+      child: DayNightSwitcher(
+        isDarkModeEnabled: SharedPrefs().getThemeIndex == 0 ? false : true,
+        onStateChanged: (isDarkModeEnabled) async {
+          isDarkModeEnabled
+              ? BlocProvider.of<ThemeBloc>(context)
+                  .add(const ThemeChanged(theme: AppTheme.Dark))
+              : BlocProvider.of<ThemeBloc>(context)
+                  .add(const ThemeChanged(theme: AppTheme.Light));
+        },
       ),
     );
   }
