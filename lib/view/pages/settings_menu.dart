@@ -1,6 +1,9 @@
+import 'package:day_night_switcher/day_night_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nativ/bloc/settings/display/display_mode_cubit.dart';
+import 'package:nativ/bloc/settings/theme/bloc/theme_bloc.dart';
+import 'package:nativ/view/themes/app_themes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsMenu extends StatelessWidget {
   const SettingsMenu({Key? key}) : super(key: key);
@@ -16,49 +19,26 @@ class SettingsMenu extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            BlocProvider(
-              create: (context) => DisplayModeCubit(),
-              child: BlocConsumer<DisplayModeCubit, DisplayModeState>(
-                listener: (context, state) {
-                  // TODO: implement listener
-                },
-                buildWhen: (previous, current) =>
-                    previous.displayMode != current.displayMode,
-                builder: (context, state) {
-                  if (state.displayMode == DisplayMode.lightMode) {
-                    return Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        Switch(
-                            value: true,
-                            onChanged: (switched) {
-                              state.copyWith(displayMode: DisplayMode.darkMode);
-                            }),
-                        const Icon(
-                          Icons.light_mode_outlined,
-                          size: 35,
-                        ),
-                      ],
-                    );
-                  } else {
-                    return Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        Switch(
-                            value: true,
-                            onChanged: (switched) {
-                              state.copyWith(
-                                  displayMode: DisplayMode.lightMode);
-                            }),
-                        const Icon(
-                          Icons.light_mode_outlined,
-                          size: 35,
-                        ),
-                      ],
-                    );
-                  }
-                },
-              ),
+            Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                BlocProvider.value(
+                  value: context.read<ThemeBloc>(),
+                  child: DayNightSwitcher(
+                    isDarkModeEnabled: false,
+                    onStateChanged: (isDarkModeEnabled) async {
+                      isDarkModeEnabled
+                          ? BlocProvider.of<ThemeBloc>(context)
+                              .add(const ThemeChanged(theme: AppTheme.Dark))
+                          : BlocProvider.of<ThemeBloc>(context)
+                              .add(const ThemeChanged(theme: AppTheme.Light));
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      prefs.setBool('DarkMode', isDarkModeEnabled);
+                    },
+                  ),
+                )
+              ],
             ),
             const SettingsMenuItem(
               leadingIcon: Icon(Icons.person),
