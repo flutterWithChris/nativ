@@ -11,6 +11,7 @@ import 'package:nativ/bloc/app/app_bloc.dart';
 import 'package:nativ/bloc/bottom_nav_bar/bottom_nav_bar_cubit.dart';
 import 'package:nativ/bloc/geolocation/bloc/geolocation_bloc.dart';
 import 'package:nativ/bloc/location/location_bloc.dart';
+import 'package:nativ/bloc/settings/preferences.dart';
 import 'package:nativ/bloc/settings/theme/bloc/theme_bloc.dart';
 
 import 'package:nativ/data/repositories/auth_repository.dart';
@@ -28,6 +29,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 void main() async {
   await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
+  await SharedPrefs().init();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final authRepository = AuthRepository();
   runApp(MyApp(authRepository: authRepository));
