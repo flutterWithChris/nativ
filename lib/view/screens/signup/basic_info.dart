@@ -106,8 +106,11 @@ class SignupButton extends StatelessWidget {
     return BlocConsumer<SignupCubit, SignupState>(
       listener: (context, state) {
         if (state.status == SignupStatus.success) {
-          pageController.nextPage(
-              duration: const Duration(seconds: 1), curve: Curves.easeInOut);
+          pageController.animateToPage(pageController.page!.toInt() + 1,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut);
+          /*  pageController.nextPage(
+              duration: const Duration(seconds: 1), curve: Curves.easeInOut); */
         }
       },
       buildWhen: (previous, current) => previous.status != current.status,

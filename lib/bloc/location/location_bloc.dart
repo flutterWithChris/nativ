@@ -21,6 +21,11 @@ class LocationBloc extends Bloc<LocationEvent, LocationState>
     notifyListeners();
   }
 
+  searchRegionsAndCities(String searchTerm) async {
+    searchResults =
+        await _placesService.getAutoCompleteRegionsAndCities(searchTerm);
+    notifyListeners();
+  }
 
   setSelectedLocation(String placeId) async {
     selectedLocation.add(await _placesService.getPlace(placeId));

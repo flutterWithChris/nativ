@@ -8,7 +8,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:nativ/bloc/geolocation/bloc/geolocation_bloc.dart';
 import 'package:nativ/bloc/location/location_bloc.dart';
 import 'package:nativ/data/model/place.dart';
-import 'package:nativ/view/widgets/location_searchbar.dart';
+import 'package:nativ/view/widgets/region_city_searchbar.dart';
 
 class MainMap extends StatefulWidget {
   const MainMap({
@@ -42,7 +42,9 @@ class _MainMapState extends State<MainMap> {
         builder: (context, state) {
       if (state is GeolocationLoading) {
         return const Center(
-          child: CircularProgressIndicator(),
+          child: CircularProgressIndicator(
+            color: Colors.red,
+          ),
         );
       }
       if (state is GeolocationLoaded) {
@@ -89,8 +91,31 @@ class _MainMapState extends State<MainMap> {
                 ),
               ],
             ),
-            IntrinsicHeight(
-              child: LocationSearchBar(),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+              child: BlocBuilder<LocationBloc, LocationState>(
+                builder: ((context, state) {
+                  if (state is LocationSearchbarFocused ||
+                      state is LocationSearchStarted) {
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 100),
+                      height: 400,
+                      child: RegionAndCitySearchBar(
+                        hintText: 'Search Regions & Cities...',
+                      ),
+                    );
+                  } else {
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 100),
+                      height: 78,
+                      child: RegionAndCitySearchBar(
+                        hintText: 'Search Regions & Cities...',
+                      ),
+                    );
+                  }
+                }),
+              ),
             )
           ],
         );

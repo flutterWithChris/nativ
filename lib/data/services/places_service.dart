@@ -17,6 +17,17 @@ class PlacesService {
     return jsonResults.map((e) => PlaceSearch.fromJson(e)).toList();
   }
 
+  Future<List<PlaceSearch>> getAutoCompleteRegionsAndCities(
+      String search) async {
+    var url = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&types=(regions)&types=(cities)&key=$mag');
+
+    var response = await http.get(url);
+    var json = convert.jsonDecode(response.body);
+    var jsonResults = json['predictions'] as List;
+    return jsonResults.map((e) => PlaceSearch.fromJson(e)).toList();
+  }
+
   Future<Place> getPlace(String placeId) async {
     var url = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/details/json?key=$mag&place_id=$placeId');

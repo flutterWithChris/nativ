@@ -34,7 +34,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
           height: 70,
           //backgroundColor: Colors.white24,
-          indicatorColor: Colors.white.withOpacity(0.5),
+          indicatorColor: Colors.black.withOpacity(0.5),
           labelTextStyle: MaterialStateProperty.all(
               const TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
       child: NavigationBar(

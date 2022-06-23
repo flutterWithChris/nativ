@@ -442,7 +442,8 @@ class SetLocationScreen extends StatelessWidget {
                               ),
                               ElevatedButton(
                                   onPressed: () {
-                                    pageController.nextPage(
+                                    pageController.animateToPage(
+                                        pageController.page!.toInt() + 1,
                                         duration:
                                             const Duration(milliseconds: 500),
                                         curve: Curves.easeInOut);

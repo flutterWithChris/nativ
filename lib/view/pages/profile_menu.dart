@@ -256,40 +256,38 @@ class MainProfileInfo extends StatelessWidget {
             'I’m a born & raised New Zealander who loves hiking & finding the best food.',
             style: TextStyle(color: Colors.black87),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: ElevatedButton(
-                onPressed: () {
-                  print('pressed');
-                },
-                style: Theme.of(context).elevatedButtonTheme.style,
-                child: Wrap(
-                  spacing: 5,
-                  children: const [
-                    Text(
-                      'Connect ',
-                    ),
-                    Icon(FontAwesomeIcons.connectdevelop)
-                  ],
-                )),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: ElevatedButton(
+                  onPressed: () {
+                    print('pressed');
+                  },
+                  style: Theme.of(context).elevatedButtonTheme.style,
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 5,
+                    children: const [
+                      Text(
+                        'Connect ',
+                      ),
+                      Icon(FontAwesomeIcons.connectdevelop)
+                    ],
+                  )),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                OutlinedButton(
+                ActionChip(
+                  label: const Text('Message Me'),
                   onPressed: () {},
-                  child: Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      spacing: 10,
-                      children: const [
-                        Icon(
-                          FontAwesomeIcons.paperPlane,
-                          size: 20,
-                        ),
-                        Text('Message Me')
-                      ]),
+                  avatar: const Icon(
+                    FontAwesomeIcons.paperPlane,
+                    size: 20,
+                  ),
                 ),
                 SizedBox(
                   child: Wrap(spacing: 20, children: const [
