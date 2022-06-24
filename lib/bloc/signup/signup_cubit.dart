@@ -40,4 +40,16 @@ class SignupCubit extends Cubit<SignupState> {
       emit(state.copyWith(status: SignupStatus.error));
     }
   }
+
+  Future<void> signUpWithGoogleCredentials() async {
+    if (state.status == SignupStatus.submitting) {
+      emit(state.copyWith(status: SignupStatus.submitting));
+    }
+    try {
+      await _authRepository.signInWithGoogle();
+      emit(state.copyWith(status: SignupStatus.success));
+    } catch (_) {
+      emit(state.copyWith(status: SignupStatus.error));
+    }
+  }
 }

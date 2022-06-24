@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutterfire_ui/auth.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'package:nativ/bloc/signup/signup_cubit.dart';
 import 'package:nativ/data/repositories/storage/storage_repository.dart';
 import 'package:nativ/view/widgets/confirm_email.dart';
@@ -69,6 +71,13 @@ class SignupBasicInfoPage extends StatelessWidget {
                             SignupButton(
                                 formKey: signupformKey,
                                 pageController: pageController),
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('OR'),
+                            ),
+                            GoogleSignupButton(
+                                formKey: signupformKey,
+                                pageController: pageController),
                           ],
                         ),
                       ],
@@ -118,7 +127,6 @@ class SignupButton extends StatelessWidget {
         return state.status == SignupStatus.submitting
             ? const CircularProgressIndicator()
             : ElevatedButton(
-                style: ElevatedButton.styleFrom(fixedSize: const Size(200, 40)),
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
                     print('Sign in Clicked');
@@ -127,7 +135,66 @@ class SignupButton extends StatelessWidget {
                     _showSnackBar(context, 'Sign Up Error!');
                   }
                 },
-                child: const Text('Continue'));
+                child: Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 15,
+                  children: const [
+                    Icon(Icons.email),
+                    Text('Sign Up With Email'),
+                  ],
+                ),
+              );
+      },
+    );
+  }
+}
+
+class GoogleSignupButton extends StatelessWidget {
+  final PageController pageController;
+  var formKey = GlobalKey<FormState>();
+  final String googleClientId = dotenv.get('GOOGLE_SERVICE_CLIENT_ID');
+
+  GoogleSignupButton({
+    Key? key,
+    required this.formKey,
+    required this.pageController,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<SignupCubit, SignupState>(
+      listener: (context, state) {
+        if (state.status == SignupStatus.success) {
+          pageController.animateToPage(pageController.page!.toInt() + 1,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut);
+          /*  pageController.nextPage(
+              duration: const Duration(seconds: 1), curve: Curves.easeInOut); */
+        }
+      },
+      buildWhen: (previous, current) => previous.status != current.status,
+      builder: (context, state) {
+        return state.status == SignupStatus.submitting
+            ? const CircularProgressIndicator()
+            : Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                child: ElevatedButton(
+                  onPressed: () {
+                    GoogleProviderConfiguration(
+                      clientId: googleClientId,
+                    );
+                    context.read<SignupCubit>().signUpWithGoogleCredentials();
+                  },
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 15,
+                    children: const [
+                      Icon(FontAwesomeIcons.google),
+                      Text('Sign Up With Google')
+                    ],
+                  ),
+                ),
+              );
       },
     );
   }

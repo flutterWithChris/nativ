@@ -4,7 +4,6 @@ import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutterfire_ui/auth.dart';
 import 'package:get/get.dart';
 import 'package:nativ/bloc/app/app_bloc.dart';
@@ -13,14 +12,12 @@ import 'package:nativ/bloc/geolocation/bloc/geolocation_bloc.dart';
 import 'package:nativ/bloc/location/location_bloc.dart';
 import 'package:nativ/bloc/settings/preferences.dart';
 import 'package:nativ/bloc/settings/theme/bloc/theme_bloc.dart';
-
 import 'package:nativ/data/repositories/auth_repository.dart';
 import 'package:nativ/data/repositories/geolocation/geolocation_repository.dart';
 import 'package:nativ/data/routes/routes.dart';
 import 'package:nativ/firebase_options.dart';
 import 'package:nativ/view/pages/profile_menu.dart';
 import 'package:nativ/view/pages/settings_menu.dart';
-
 import 'package:nativ/view/widgets/bottom_nav_bar.dart';
 import 'package:nativ/view/widgets/location_searchbar.dart';
 import 'package:nativ/view/widgets/main_map.dart';
@@ -93,7 +90,6 @@ class AppView extends StatelessWidget {
         child: BlocBuilder<ThemeBloc, ThemeState>(
           builder: (context, state) {
             return GetMaterialApp(
-              // TODO: darkTheme: ThemeData(),
               theme: state.themeData,
               home: FlowBuilder(
                 state: context.select((AppBloc bloc) => bloc.state.status),
@@ -129,7 +125,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final PanelController panelController = PanelController();
     final user = context.select((AppBloc bloc) => bloc.state.user);
-    MapController mapController = MapController();
     return Scaffold(
       drawer: Drawer(
         //backgroundColor: Colors.indigo,
