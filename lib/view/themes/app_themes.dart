@@ -8,6 +8,7 @@ enum AppTheme {
 
 final appThemeData = {
   AppTheme.Light: ThemeData(
+    primaryTextTheme: const TextTheme(),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: Colors.white70,
@@ -17,12 +18,19 @@ final appThemeData = {
     ),
     textTheme: GoogleFonts.lektonTextTheme(),
     chipTheme: const ChipThemeData(),
-    primaryColor: Colors.white,
+    colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
     // colorSchemeSeed: const Color.fromARGB(255, 76, 94, 255),
     useMaterial3: true,
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        fixedSize: const Size(250, 35),
+        primary: Colors.black54,
+        onPrimary: Colors.black38,
+        textStyle: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.white70,
+            fontFamily: GoogleFonts.lekton().fontFamily),
+        // fixedSize: const Size(200, 35),
       ),
     ),
   ),
@@ -42,7 +50,7 @@ final appThemeData = {
     useMaterial3: true,
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        fixedSize: const Size(250, 35),
+        fixedSize: const Size(200, 35),
       ),
     ),
   ),

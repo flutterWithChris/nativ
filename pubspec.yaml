@@ -42,7 +42,6 @@ dependencies:
   latlong2: ^0.8.1
   material_floating_search_bar: ^0.3.7
   flutter_bloc: ^8.0.1
-  keyboard_visibility: ^0.5.6
   rxdart: ^0.27.4
   location: ^4.4.0
   flutter_map_location_marker: ^4.0.1
@@ -64,6 +63,8 @@ dependencies:
   shared_preferences: ^2.0.15
   day_night_switcher: ^0.2.0+1
   bloc: ^8.0.3
+  flutter_automation: ^2.0.0
+  flutter_keyboard_visibility: ^5.3.0
 
 dev_dependencies:
   flutter_test:

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:nativ/bloc/location/location_bloc.dart';
 
 class LocationSearchBar extends StatefulWidget {
@@ -23,12 +23,12 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
   void initState() {
     // TODO: implement initState
 
-    KeyboardVisibilityNotification().addNewListener(
-      onShow: () {},
-      onHide: () {
+    KeyboardVisibilityController().onChange.listen((visible) {
+      if (visible = false) {
         controller.close();
-      },
-    );
+      }
+    });
+
     super.initState();
   }
 

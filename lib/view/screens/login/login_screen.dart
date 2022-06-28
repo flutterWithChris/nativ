@@ -84,45 +84,44 @@ class LoginForm extends StatelessWidget {
                             radius: 40.0,
                           ),
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            SignupButton(),
-                            _EmailInput(),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            _PasswordInput(),
-                            SizedBox(
-                              height: 20,
-                            )
-                          ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 50),
+                          child: Column(
+                            // crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 2),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    GoogleLoginButton(
+                                        googleClientId: googleClientId),
+                                    const SignupButton(),
+                                  ],
+                                ),
+                              ),
+                              _EmailInput(
+                                controller: emailController,
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              _PasswordInput(controller: passwordController),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: TextButton(
+                                    onPressed: () {},
+                                    child: const Text(
+                                      'Forgot Password?',
+                                      textAlign: TextAlign.end,
+                                    )),
+                              ),
+                            ],
+                          ),
                         ),
                         _loginButton(),
-                        TextButton(
-                            onPressed: () {},
-                            child: const Text('Forgot Password?')),
-                        const Text('OR'),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          child: ElevatedButton(
-                              onPressed: () {
-                                GoogleProviderConfiguration(
-                                  clientId: googleClientId,
-                                );
-                                context
-                                    .read<LoginCubit>()
-                                    .logInWithGoogleCredentials();
-                              },
-                              child: Wrap(
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                spacing: 15,
-                                children: const [
-                                  Icon(FontAwesomeIcons.google),
-                                  Text('Sign In With Google')
-                                ],
-                              )),
-                        )
                       ],
                     ),
                   ),
@@ -142,6 +141,8 @@ class LoginForm extends StatelessWidget {
         return state.status == LoginStatus.submitting
             ? const CircularProgressIndicator()
             : ElevatedButton(
+                style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                    fixedSize: MaterialStateProperty.all(const Size(220, 42))),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     context.read<LoginCubit>().logInWithCredentials();
@@ -149,16 +150,52 @@ class LoginForm extends StatelessWidget {
                     _showSnackBar(context, 'Login Error!');
                   }
                 },
-                child: Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 15,
-                  children: const [
-                    Icon(Icons.email),
-                    Text('Sign Up With Email'),
-                  ],
+                child: const Text(
+                  'Sign In',
+                  style: TextStyle(color: Colors.white),
                 ),
               );
       },
+    );
+  }
+}
+
+class GoogleLoginButton extends StatelessWidget {
+  const GoogleLoginButton({
+    Key? key,
+    required this.googleClientId,
+  }) : super(key: key);
+
+  final String googleClientId;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      iconSize: 20,
+      //   style: Theme.of(context).elevatedButtonTheme.style,
+      onPressed: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Logging In...',
+              style: TextStyle(color: Colors.black87),
+            ),
+            backgroundColor: Colors.white,
+          ),
+        );
+        GoogleProviderConfiguration(
+          clientId: googleClientId,
+        );
+        context.read<LoginCubit>().logInWithGoogleCredentials();
+      },
+      icon: Image.network(
+        'http://pngimg.com/uploads/google/google_PNG19635.png',
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          FontAwesomeIcons.google,
+          color: Colors.black54,
+        ),
+      ),
+      color: Colors.black54,
     );
   }
 }
@@ -176,16 +213,11 @@ class SignupButton extends StatelessWidget {
       },
       child: const Text.rich(
         TextSpan(
+          style: TextStyle(fontSize: 16),
           children: [
-            TextSpan(
-              text: 'New to Nativ? ',
-              style: TextStyle(
-                fontStyle: FontStyle.italic,
-              ),
-            ),
+            TextSpan(text: 'New? '),
             TextSpan(
               text: 'Sign Up',
-              style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -196,12 +228,15 @@ class SignupButton extends StatelessWidget {
 }
 
 class _EmailInput extends StatelessWidget {
-  const _EmailInput({
+  TextEditingController controller = TextEditingController();
+  _EmailInput({
+    required this.controller,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    FocusNode node = FocusNode();
     return SizedBox(
       width: 325,
       height: 50,
@@ -209,9 +244,18 @@ class _EmailInput extends StatelessWidget {
         buildWhen: (previous, current) => previous.email != current.email,
         builder: (context, state) {
           return TextFormField(
-            validator: (value) => state.isEmailValid ? null : 'Invalid Email!',
-            onChanged: (value) =>
-                context.read<LoginCubit>().emailChanged(value),
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            focusNode: node,
+            validator: (value) {
+              if (node.hasFocus) return null;
+              // if (node.hasFocus == false && value!.isEmpty) return null;
+              if (value!.isEmpty) return "Can't be empty!";
+              if (state.isEmailValid) return 'Invalid Email!';
+              return null;
+            },
+            onChanged: (value) => {
+              context.read<LoginCubit>().emailChanged(value),
+            },
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
               label: const Text('Email Address'),
@@ -230,7 +274,9 @@ class _EmailInput extends StatelessWidget {
 }
 
 class _PasswordInput extends StatelessWidget {
-  const _PasswordInput({
+  TextEditingController controller = TextEditingController();
+  _PasswordInput({
+    required this.controller,
     Key? key,
   }) : super(key: key);
 
