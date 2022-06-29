@@ -55,7 +55,7 @@ class LoginForm extends StatelessWidget {
         // TODO: implement listener
         if (state.status == LoginStatus.error) {
           // TODO: Implement Error Handler
-          _showSnackBar(context, 'test');
+          _showSnackBar(context, 'Login Error!');
         }
       },
       child: Center(
@@ -87,7 +87,6 @@ class LoginForm extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 50),
                           child: Column(
-                            // crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
                                 padding:

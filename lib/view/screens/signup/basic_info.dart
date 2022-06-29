@@ -6,7 +6,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nativ/bloc/signup/signup_cubit.dart';
 import 'package:nativ/data/repositories/storage/storage_repository.dart';
-import 'package:nativ/view/widgets/confirm_email.dart';
 
 class SignupBasicInfoPage extends StatelessWidget {
   static GlobalKey<FormState> signupformKey = GlobalKey<FormState>();
@@ -41,26 +40,20 @@ class SignupBasicInfoPage extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       //crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('What\'s Your Email Address?',
+                        Text('Email Signup',
                             style: Theme.of(context).textTheme.headlineMedium),
                         const SizedBox(
                           height: 15,
                         ),
                         EmailInput(),
                         const SizedBox(
-                          height: 15,
+                          height: 5,
                         ),
-                        const ConfirmEmailInput(),
-                        const SizedBox(
-                          height: 25,
-                        ),
+                        // const ConfirmEmailInput(),
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           //   crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Choose a Password',
-                                style:
-                                    Theme.of(context).textTheme.headlineMedium),
                             const SizedBox(
                               height: 15,
                             ),
@@ -72,12 +65,15 @@ class SignupBasicInfoPage extends StatelessWidget {
                                 formKey: signupformKey,
                                 pageController: pageController),
                             const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text('OR'),
+                              padding: EdgeInsets.all(16.0),
+                              child: Text(
+                                'OR',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
                             ),
                             GoogleSignupButton(
                                 formKey: signupformKey,
-                                pageController: pageController),
+                                pageController: pageController)
                           ],
                         ),
                       ],
@@ -139,8 +135,14 @@ class SignupButton extends StatelessWidget {
                   crossAxisAlignment: WrapCrossAlignment.center,
                   spacing: 15,
                   children: const [
-                    Icon(Icons.email),
-                    Text('Sign Up With Email'),
+                    Icon(
+                      Icons.email,
+                      color: Colors.white,
+                    ),
+                    Text(
+                      'Sign Up With Email',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ],
                 ),
               );
@@ -179,6 +181,7 @@ class GoogleSignupButton extends StatelessWidget {
             : Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15),
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(primary: Colors.white),
                   onPressed: () {
                     GoogleProviderConfiguration(
                       clientId: googleClientId,
@@ -188,9 +191,19 @@ class GoogleSignupButton extends StatelessWidget {
                   child: Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     spacing: 15,
-                    children: const [
-                      Icon(FontAwesomeIcons.google),
-                      Text('Sign Up With Google')
+                    children: [
+                      Image.network(
+                        'http://pngimg.com/uploads/google/google_PNG19635.png',
+                        height: 30,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(
+                          FontAwesomeIcons.google,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      const Text(
+                        'Sign Up With Google',
+                      )
                     ],
                   ),
                 ),

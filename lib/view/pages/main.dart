@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +28,7 @@ void main() async {
   await SharedPrefs().init();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final authRepository = AuthRepository();
+
   runApp(MyApp(authRepository: authRepository));
 }
 
@@ -119,7 +119,6 @@ class _HomeScreenState extends State<HomeScreen> {
     const ProfileScreen(),
     const SettingsMenu(),
   ];
-  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {

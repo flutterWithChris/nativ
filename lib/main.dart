@@ -128,79 +128,151 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final PanelController panelController = PanelController();
     final user = context.select((AppBloc bloc) => bloc.state.user);
-    return Scaffold(
-      drawer: Drawer(
-        //backgroundColor: Colors.indigo,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 50),
-          child: Column(
-            children: const <Widget>[
-              ThemeSwitcher(),
-              DrawerHeader(
-                child: Text(
-                  'Name',
-                  style: TextStyle(color: Colors.black87, fontSize: 20),
-                ),
+    return BlocBuilder<AppBloc, AppState>(
+      builder: (context, state) {
+        return Scaffold(
+          drawer: Drawer(
+            //backgroundColor: Colors.indigo,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 50),
+              child: Column(
+                children: const <Widget>[
+                  ThemeSwitcher(),
+                  DrawerHeader(
+                    child: Text(
+                      'Name',
+                      style: TextStyle(color: Colors.black87, fontSize: 20),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
-      bottomNavigationBar: BlocBuilder<BottomNavBarCubit, BottomNavBarState>(
-        builder: (context, state) {
-          return BottomNavBar(index: state.index);
-        },
-      ),
-      appBar: AppBar(
-        actions: [
-          IconButton(
-              onPressed: () {
-                context.read<AppBloc>().add(AppLogoutRequest());
-              },
-              icon: const Icon(
-                Icons.exit_to_app,
-              )),
-        ],
-        title: const Text(
-          'Nativ',
-        ),
-        //  backgroundColor: Colors.white,
-      ),
-      body: BlocBuilder<BottomNavBarCubit, BottomNavBarState>(
-        builder: (context, state) {
-          if (state.bottomNavBarItem == BottomNavBarItem.home) {
-            return Stack(
-              children: [
-                const MainMap(),
-                BlocBuilder<LocationBloc, LocationState>(
-                  builder: (context, state) {
-                    if (state is LocationLoading) {
-                      return SlidingUpPanel(
-                        controller: panelController,
-                        defaultPanelState: PanelState.CLOSED,
-                        parallaxEnabled: true,
-                        parallaxOffset: 1.0,
-                        maxHeight: MediaQuery.of(context).size.height * 0.81,
-                        minHeight: 150,
-                        panelBuilder: ((sc) => NativListView(
-                              scrollController: sc,
-                            )),
-                        body: const MainMap(),
-                      );
-                    }
-                    return const MainMap();
-                  },
+          bottomNavigationBar:
+              BlocBuilder<BottomNavBarCubit, BottomNavBarState>(
+            builder: (context, state) {
+              return BottomNavBar(index: state.index);
+            },
+          ),
+          appBar: const PreferredSize(
+            preferredSize: Size.fromHeight(60.0),
+            child: MainAppBar(),
+          ),
+          body: BlocBuilder<BottomNavBarCubit, BottomNavBarState>(
+            builder: (context, state) {
+              if (state.bottomNavBarItem == BottomNavBarItem.home) {
+                return Stack(
+                  children: [
+                    const MainMap(),
+                    BlocBuilder<LocationBloc, LocationState>(
+                      builder: (context, state) {
+                        if (state is LocationLoading) {
+                          return SlidingUpPanel(
+                            controller: panelController,
+                            defaultPanelState: PanelState.CLOSED,
+                            parallaxEnabled: true,
+                            parallaxOffset: 1.0,
+                            maxHeight:
+                                MediaQuery.of(context).size.height * 0.81,
+                            minHeight: 150,
+                            panelBuilder: ((sc) => NativListView(
+                                  scrollController: sc,
+                                )),
+                            body: const MainMap(),
+                          );
+                        }
+                        return const MainMap();
+                      },
+                    ),
+                  ],
+                );
+              } else if (state.bottomNavBarItem == BottomNavBarItem.profile) {
+                return const ProfileMenu();
+              } else if (state.bottomNavBarItem == BottomNavBarItem.settings) {
+                return const SettingsMenu();
+              }
+              return Container();
+            },
+          ),
+        );
+      },
+    );
+  }
+}
+
+class MainAppBar extends StatelessWidget {
+  const MainAppBar({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<BottomNavBarCubit, BottomNavBarState>(
+      builder: (context, state) {
+        if (state.bottomNavBarItem == BottomNavBarItem.profile) {
+          return AppBar(
+              actions: [
+                TextButton(
+                  onPressed: () =>
+                      context.read<AppBloc>().add(AppLogoutRequest()),
+                  child: Wrap(
+                    spacing: 10,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: const [
+                      Text(
+                        'Logout',
+                      ),
+                      Icon(
+                        Icons.logout_rounded,
+                      ),
+                    ],
+                  ),
                 ),
               ],
-            );
-          } else if (state.bottomNavBarItem == BottomNavBarItem.profile) {
-            return const ProfileMenu();
-          } else if (state.bottomNavBarItem == BottomNavBarItem.settings) {
-            return const SettingsMenu();
-          }
-          return Container();
-        },
-      ),
+              title: PopupMenuButton(
+                position: PopupMenuPosition.under,
+                child: Wrap(
+                  spacing: 5,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: const [
+                    Text('thor_oak'),
+                    Icon(Icons.keyboard_arrow_down),
+                  ],
+                ),
+                itemBuilder: (context) {
+                  List<PopupMenuItem> menuItems = [
+                    const PopupMenuItem(child: Text("thor_in (traveler)")),
+                  ];
+                  return menuItems;
+                },
+              )
+              //  backgroundColor: Colors.white,
+              );
+        }
+        return AppBar(
+          actions: [
+            TextButton(
+              onPressed: () => context.read<AppBloc>().add(AppLogoutRequest()),
+              child: Wrap(
+                spacing: 10,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: const [
+                  Text(
+                    'Logout',
+                  ),
+                  Icon(
+                    Icons.logout_rounded,
+                  ),
+                ],
+              ),
+            ),
+          ],
+          title: const Text(
+            'Nativ',
+          ),
+          //  backgroundColor: Colors.white,
+        );
+      },
     );
   }
 }

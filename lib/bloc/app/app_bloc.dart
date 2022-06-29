@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 import 'package:nativ/data/model/user.dart';
 import 'package:nativ/data/repositories/auth_repository.dart';
 

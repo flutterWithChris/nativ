@@ -263,15 +263,21 @@ class MainProfileInfo extends StatelessWidget {
                   onPressed: () {
                     print('pressed');
                   },
-                  style: Theme.of(context).elevatedButtonTheme.style,
+                  style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                      fixedSize:
+                          MaterialStateProperty.all(const Size(325, 42))),
                   child: Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     spacing: 5,
                     children: const [
                       Text(
                         'Connect ',
+                        style: TextStyle(color: Colors.white),
                       ),
-                      Icon(FontAwesomeIcons.connectdevelop)
+                      Icon(
+                        FontAwesomeIcons.connectdevelop,
+                        color: Colors.white,
+                      )
                     ],
                   )),
             ),

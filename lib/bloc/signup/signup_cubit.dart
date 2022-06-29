@@ -46,7 +46,7 @@ class SignupCubit extends Cubit<SignupState> {
       emit(state.copyWith(status: SignupStatus.submitting));
     }
     try {
-      await _authRepository.signInWithGoogle();
+      await _authRepository.signUpWithGoogle();
       emit(state.copyWith(status: SignupStatus.success));
     } catch (_) {
       emit(state.copyWith(status: SignupStatus.error));

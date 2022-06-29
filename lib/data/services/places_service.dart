@@ -1,8 +1,10 @@
+import 'dart:convert' as convert;
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+// ignore: depend_on_referenced_packages
+import 'package:http/http.dart' as http;
 import 'package:nativ/data/model/place.dart';
 import 'package:nativ/data/model/place_search.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert' as convert;
 
 class PlacesService {
   var mag = dotenv.get('GOOGLE_MAPS_MAGNOLIA');
