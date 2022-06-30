@@ -10,10 +10,14 @@ import 'package:nativ/bloc/app/app_bloc.dart';
 import 'package:nativ/bloc/bottom_nav_bar/bottom_nav_bar_cubit.dart';
 import 'package:nativ/bloc/geolocation/bloc/geolocation_bloc.dart';
 import 'package:nativ/bloc/location/location_bloc.dart';
+import 'package:nativ/bloc/onboarding/onboarding_bloc.dart';
 import 'package:nativ/bloc/settings/preferences.dart';
 import 'package:nativ/bloc/settings/theme/bloc/theme_bloc.dart';
+import 'package:nativ/bloc/signup/signup_cubit.dart';
 import 'package:nativ/data/repositories/auth_repository.dart';
+import 'package:nativ/data/repositories/database_repository.dart';
 import 'package:nativ/data/repositories/geolocation/geolocation_repository.dart';
+import 'package:nativ/data/repositories/storage/storage_repository.dart';
 import 'package:nativ/data/routes/routes.dart';
 import 'package:nativ/firebase_options.dart';
 import 'package:nativ/view/pages/profile_menu.dart';
@@ -88,6 +92,14 @@ class AppView extends StatelessWidget {
             create: (context) => GeolocationBloc(
                 geoLocationRepository: context.read<GeoLocationRepository>())
               ..add(LoadGeolocation()),
+          ),
+          BlocProvider(
+            create: (context) => SignupCubit(context.read<AuthRepository>()),
+          ),
+          BlocProvider(
+            create: (context) => OnboardingBloc(
+                storageRepository: StorageRepository(),
+                databaseRepository: DatabaseRepository()),
           ),
         ],
         child: BlocBuilder<ThemeBloc, ThemeState>(

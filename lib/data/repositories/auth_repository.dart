@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nativ/data/model/user.dart';
-import 'package:nativ/data/repositories/database_repository.dart';
+
 
 class AuthRepository {
   final firebase_auth.FirebaseAuth _firebaseAuth;
@@ -19,16 +19,19 @@ class AuthRepository {
     });
   }
 
-  Future<void> signUp({required String email, required String password}) async {
+  Future<firebase_auth.User?> signUp(
+      {required String email, required String password}) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
+      final credential = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
-      Map<String, dynamic> userInfoMap = {
-        "email": email,
-      };
-      await DatabaseRepository()
-          .storeUserInfoDB(_firebaseAuth.currentUser!.uid, userInfoMap);
+      final user = credential.user;
+      return user;
+
+      /*await DatabaseRepository().createUser(const User().copyWith(
+          id: _firebaseAuth.currentUser!.uid,
+          email: _firebaseAuth.currentUser!.email));*/
     } catch (_) {}
+    return null;
   }
 
   Future<void> loginWithEmailAndPassword(
@@ -74,11 +77,12 @@ class AuthRepository {
 
       await firebase_auth.FirebaseAuth.instance
           .signInWithCredential(credential);
-      Map<String, dynamic> userInfoMap = {
-        "email": _firebaseAuth.currentUser!.email,
-      };
-      await DatabaseRepository()
-          .storeUserInfoDB(_firebaseAuth.currentUser!.uid, userInfoMap);
+
+      /*   DatabaseRepository().storeUserInfoDB(
+          _firebaseAuth.currentUser!.uid,
+          const User().copyWith(
+              id: _firebaseAuth.currentUser!.uid,
+              email: _firebaseAuth.currentUser!.email));*/
     } catch (_) {
       throw Exception(firebase_auth.FirebaseAuthException);
     }

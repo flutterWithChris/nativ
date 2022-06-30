@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nativ/bloc/location/location_bloc.dart';
+import 'package:nativ/bloc/onboarding/onboarding_bloc.dart';
 import 'package:nativ/bloc/signup/signup_cubit.dart';
 import 'package:nativ/data/model/place.dart';
 import 'package:nativ/view/screens/signup/basic_info.dart';
@@ -394,87 +395,116 @@ class SetLocationScreen extends StatelessWidget {
                     }),
                   ),
                 ),
-                StreamBuilder<Place>(
-                  stream: context.read<LocationBloc>().selectedLocation.stream,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      var setLocation = snapshot.data as Place;
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 25.0),
-                        child: FractionallySizedBox(
-                          widthFactor: 0.9,
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  const Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                    child: Icon(
-                                      Icons.check_circle,
-                                      color: Colors.blueAccent,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: RichText(
-                                      text: TextSpan(
+                BlocProvider.value(
+                  value: context.read<OnboardingBloc>(),
+                  child: BlocBuilder<OnboardingBloc, OnboardingState>(
+                    builder: (context, state) {
+                      if (state is OnboardingLoading) {
+                        return const CircularProgressIndicator();
+                      }
+                      if (state is OnboardingLoaded) {
+                        return StreamBuilder<Place>(
+                          stream: context
+                              .read<LocationBloc>()
+                              .selectedLocation
+                              .stream,
+                          builder: (context, snapshot) {
+                            var user = context.read<SignupCubit>().state.user!;
+                            if (snapshot.hasData) {
+                              var setLocation = snapshot.data as Place;
+
+                              context.read<OnboardingBloc>().add(UpdateUser(
+                                  user: state.user
+                                      .copyWith(location: setLocation.name)));
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 25.0),
+                                child: FractionallySizedBox(
+                                  widthFactor: 0.9,
+                                  child: Column(
+                                    children: [
+                                      Row(
                                         children: [
-                                          const TextSpan(
-                                            text: 'Set Location: ',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18,
-                                                color: Colors.black87),
+                                          const Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Icon(
+                                              Icons.check_circle,
+                                              color: Colors.blueAccent,
+                                            ),
                                           ),
-                                          TextSpan(
-                                              text: setLocation.name,
-                                              style: const TextStyle(
-                                                  fontSize: 18,
-                                                  color: Colors.black87)),
+                                          Expanded(
+                                            child: RichText(
+                                              text: TextSpan(
+                                                children: [
+                                                  const TextSpan(
+                                                    text: 'Set Location: ',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 18,
+                                                        color: Colors.black87),
+                                                  ),
+                                                  TextSpan(
+                                                      text: setLocation.name,
+                                                      style: const TextStyle(
+                                                          fontSize: 18,
+                                                          color:
+                                                              Colors.black87)),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
-                                    ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            pageController.animateToPage(
+                                                pageController.page!.toInt() +
+                                                    1,
+                                                duration: const Duration(
+                                                    milliseconds: 500),
+                                                curve: Curves.easeInOut);
+                                          },
+                                          child: const Text('Continue')),
+                                    ],
                                   ),
-                                ],
+                                ),
+                              );
+                            }
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 25.0),
+                              child: RichText(
+                                text: const TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Set Location: ',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                          color: Colors.black87),
+                                    ),
+                                    TextSpan(
+                                        text: 'None',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.black87)),
+                                  ],
+                                ),
                               ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                              ElevatedButton(
-                                  onPressed: () {
-                                    pageController.animateToPage(
-                                        pageController.page!.toInt() + 1,
-                                        duration:
-                                            const Duration(milliseconds: 500),
-                                        curve: Curves.easeInOut);
-                                  },
-                                  child: const Text('Continue')),
-                            ],
-                          ),
-                        ),
+                            );
+                          },
+                        );
+                      }
+                      return const Center(
+                        child: Text('Something Went Wrong'),
                       );
-                    }
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 25.0),
-                      child: RichText(
-                        text: const TextSpan(
-                          children: [
-                            TextSpan(
-                              text: 'Set Location: ',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                  color: Colors.black87),
-                            ),
-                            TextSpan(
-                                text: 'None',
-                                style: TextStyle(
-                                    fontSize: 18, color: Colors.black87)),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+                    },
+                  ),
                 ),
               ],
             ),

@@ -4,8 +4,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutterfire_ui/auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nativ/bloc/onboarding/onboarding_bloc.dart';
 import 'package:nativ/bloc/signup/signup_cubit.dart';
-import 'package:nativ/data/repositories/storage/storage_repository.dart';
+import 'package:nativ/data/model/user.dart';
 
 class SignupBasicInfoPage extends StatelessWidget {
   static GlobalKey<FormState> signupformKey = GlobalKey<FormState>();
@@ -97,7 +98,7 @@ void _showSnackBar(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
 
-class SignupButton extends StatelessWidget {
+class SignupButton extends StatefulWidget {
   final PageController pageController;
   var formKey = GlobalKey<FormState>();
   SignupButton({
@@ -107,11 +108,17 @@ class SignupButton extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<SignupButton> createState() => _SignupButtonState();
+}
+
+class _SignupButtonState extends State<SignupButton> {
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<SignupCubit, SignupState>(
       listener: (context, state) {
         if (state.status == SignupStatus.success) {
-          pageController.animateToPage(pageController.page!.toInt() + 1,
+          widget.pageController.animateToPage(
+              widget.pageController.page!.toInt() + 1,
               duration: const Duration(milliseconds: 500),
               curve: Curves.easeInOut);
           /*  pageController.nextPage(
@@ -124,9 +131,25 @@ class SignupButton extends StatelessWidget {
             ? const CircularProgressIndicator()
             : ElevatedButton(
                 onPressed: () async {
-                  if (formKey.currentState!.validate()) {
+                  if (widget.formKey.currentState!.validate()) {
                     print('Sign in Clicked');
                     await context.read<SignupCubit>().signupFormSubmitted();
+                    if (!mounted) return;
+                    User user = User(
+                        id: context.read<SignupCubit>().state.user!.uid,
+                        name: '',
+                        location: '',
+                        email: context.read<SignupCubit>().state.user!.email,
+                        username: '',
+                        reviews: const {},
+                        specialties: const {},
+                        types: const [],
+                        bio: '',
+                        photo: '');
+
+                    context
+                        .read<OnboardingBloc>()
+                        .add(StartOnboarding(user: user));
                   } else {
                     _showSnackBar(context, 'Sign Up Error!');
                   }
@@ -182,11 +205,13 @@ class GoogleSignupButton extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 15),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(primary: Colors.white),
-                  onPressed: () {
+                  onPressed: () async {
                     GoogleProviderConfiguration(
                       clientId: googleClientId,
                     );
-                    context.read<SignupCubit>().signUpWithGoogleCredentials();
+                    await context
+                        .read<SignupCubit>()
+                        .signUpWithGoogleCredentials();
                   },
                   child: Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
@@ -220,36 +245,49 @@ class ProfileIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () async {
-        ImagePicker picker = ImagePicker();
-        final XFile? image =
-            await picker.pickImage(source: ImageSource.gallery);
-
-        if (image == null) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('No Image(s) Added!'),
-            backgroundColor: Colors.redAccent,
-          ));
+    return BlocBuilder<OnboardingBloc, OnboardingState>(
+      builder: (context, state) {
+        if (state is OnboardingLoading) {
+          return const CircularProgressIndicator();
         }
+        if (state is OnboardingLoaded) {
+          return InkWell(
+            onTap: () async {
+              ImagePicker picker = ImagePicker();
+              final XFile? image =
+                  await picker.pickImage(source: ImageSource.gallery);
 
-        if (image != null) {
-          StorageRepository().uploadImage(image);
-          print('Uploading.......');
+              if (image == null) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text('No Image(s) Added!'),
+                  backgroundColor: Colors.redAccent,
+                ));
+              }
+
+              if (image != null) {
+                context
+                    .read<OnboardingBloc>()
+                    .add(UpdateUserImages(image: image));
+                print('Uploading.......');
+              }
+            },
+            child: Stack(
+              alignment: AlignmentDirectional.bottomEnd,
+              children: const [
+                CircleAvatar(
+                  radius: 40,
+                ),
+                Icon(
+                  Icons.add_circle,
+                  color: Colors.redAccent,
+                )
+              ],
+            ),
+          );
+        } else {
+          return const Text('Something went wrong.');
         }
       },
-      child: Stack(
-        alignment: AlignmentDirectional.bottomEnd,
-        children: const [
-          CircleAvatar(
-            radius: 40,
-          ),
-          Icon(
-            Icons.add_circle,
-            color: Colors.redAccent,
-          )
-        ],
-      ),
     );
   }
 }
@@ -338,7 +376,9 @@ class _EmailInputState extends State<EmailInput> {
         return TextFormField(
           controller: widget.emailController,
           validator: (value) => state.isEmailValid ? null : 'Invalid Email',
-          onChanged: (value) => context.read<SignupCubit>().emailChanged(value),
+          onChanged: (value) {
+            context.read<SignupCubit>().emailChanged(value);
+          },
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
             hintText: 'you@example.com',

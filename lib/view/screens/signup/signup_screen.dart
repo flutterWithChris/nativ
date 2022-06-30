@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nativ/bloc/signup/signup_cubit.dart';
-import 'package:nativ/data/repositories/auth_repository.dart';
+import 'package:nativ/bloc/onboarding/onboarding_bloc.dart';
 import 'package:nativ/view/screens/signup/signup_form.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -27,20 +26,21 @@ class SignupScreen extends StatelessWidget {
 
     return Scaffold(
       // appBar: AppBar(),
-      body: BlocProvider<SignupCubit>(
-        create: (context) => SignupCubit(context.read<AuthRepository>()),
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          color: Colors.white38,
-          child: SignupForm(
-            currentPageIndex: currentPageIndex,
-            controller: controller,
-            emailController: emailController,
-            emailConfirmController: emailConfirmController,
-            passwordController: passwordController,
-          ),
-        ),
+      body: BlocBuilder<OnboardingBloc, OnboardingState>(
+        builder: (context, state) {
+          return Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            color: Colors.white38,
+            child: SignupForm(
+              currentPageIndex: currentPageIndex,
+              controller: controller,
+              emailController: emailController,
+              emailConfirmController: emailConfirmController,
+              passwordController: passwordController,
+            ),
+          );
+        },
       ),
       bottomSheet: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),

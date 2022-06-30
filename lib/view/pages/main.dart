@@ -17,6 +17,7 @@ import 'package:nativ/data/routes/routes.dart';
 import 'package:nativ/firebase_options.dart';
 import 'package:nativ/view/pages/profile_menu.dart';
 import 'package:nativ/view/pages/settings_menu.dart';
+import 'package:nativ/view/screens/splash_screen.dart';
 import 'package:nativ/view/widgets/bottom_nav_bar.dart';
 import 'package:nativ/view/widgets/location_searchbar.dart';
 import 'package:nativ/view/widgets/main_map.dart';
@@ -90,10 +91,12 @@ class AppView extends StatelessWidget {
         child: BlocBuilder<ThemeBloc, ThemeState>(
           builder: (context, state) {
             return GetMaterialApp(
+              initialRoute: SplashScreen.routeName,
               theme: state.themeData,
               home: FlowBuilder(
                 state: context.select((AppBloc bloc) => bloc.state.status),
                 onGeneratePages: onGenerateAppViewPages,
+                
               ),
             );
           },

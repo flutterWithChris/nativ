@@ -9,15 +9,16 @@ class SignupState extends Equatable {
   bool get isPasswordValid => password.length > 5;
   bool isTraveler = false;
   bool isNativ = false;
+  firebase_auth.User? user;
   final SignupStatus status;
 
-  SignupState({
-    required this.email,
-    required this.password,
-    required this.status,
-    required this.isNativ,
-    required this.isTraveler,
-  });
+  SignupState(
+      {required this.email,
+      required this.password,
+      required this.status,
+      required this.isNativ,
+      required this.isTraveler,
+      this.user});
 
   factory SignupState.initial() {
     return SignupState(
@@ -25,11 +26,9 @@ class SignupState extends Equatable {
         password: '',
         isNativ: false,
         isTraveler: false,
-        status: SignupStatus.initial);
+        status: SignupStatus.initial,
+        user: null);
   }
-
-  @override
-  List<Object> get props => [email, password, status];
 
   SignupState copyWith({
     String? email,
@@ -37,6 +36,7 @@ class SignupState extends Equatable {
     SignupStatus? status,
     bool? isNativ,
     bool? isTraveler,
+    firebase_auth.User? user,
   }) {
     return SignupState(
       email: email ?? this.email,
@@ -44,6 +44,14 @@ class SignupState extends Equatable {
       status: status ?? this.status,
       isNativ: isNativ ?? this.isNativ,
       isTraveler: isTraveler ?? this.isTraveler,
+      user: user ?? this.user,
     );
   }
+
+  @override
+  List<Object> get props => [
+        email,
+        password,
+        status,
+      ];
 }

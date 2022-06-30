@@ -10,7 +10,17 @@ abstract class OnboardingEvent extends Equatable {
 class StartOnboarding extends OnboardingEvent {
   final User user;
   const StartOnboarding({
-    this.user = const User(id: '', name: '', email: '', photo: ''),
+    this.user = const User(
+      id: '',
+      name: '',
+      email: '',
+      photo: '',
+      username: '',
+      types: [],
+      location: '',
+      specialties: {},
+      reviews: {},
+    ),
   });
 
   @override
