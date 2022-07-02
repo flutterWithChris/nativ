@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+
 import 'package:nativ/bloc/app/app_bloc.dart';
 import 'package:nativ/bloc/onboarding/onboarding_bloc.dart';
+import 'package:nativ/data/model/specialty.dart';
 
 class ProfileSetup extends StatelessWidget {
   const ProfileSetup({Key? key}) : super(key: key);
@@ -89,11 +91,58 @@ class PublicReviews extends StatelessWidget {
   }
 }
 
-class MySpecialties extends StatelessWidget {
+class MySpecialties extends StatefulWidget {
   const MySpecialties({
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<MySpecialties> createState() => _MySpecialtiesState();
+}
+
+class _MySpecialtiesState extends State<MySpecialties> {
+  static List<String> selectedSpecialties = [];
+
+  List<Specialty> specialtySample = [
+    Specialty(
+      name: 'Entertainment',
+      selected: false,
+      icon: const Icon(FontAwesomeIcons.music),
+    ),
+    Specialty(
+      name: 'Nightlife',
+      selected: true,
+      icon: const Icon(FontAwesomeIcons.beerMugEmpty),
+    ),
+    Specialty(
+      name: 'Food',
+      icon: const Icon(
+        FontAwesomeIcons.utensils,
+        size: 12,
+      ),
+      selected: true,
+    ),
+    Specialty(
+      name: 'Navigation',
+      selected: false,
+      icon: const Icon(FontAwesomeIcons.route),
+    ),
+    Specialty(
+      name: 'Nature',
+      selected: true,
+      color: Colors.brown,
+      icon: const Icon(
+        FontAwesomeIcons.tree,
+        color: Colors.brown,
+      ),
+    ),
+    Specialty(
+      name: 'Wildlife',
+      selected: false,
+      color: Colors.brown,
+      icon: const Icon(FontAwesomeIcons.kiwiBird),
+    ),
+  ];
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -122,39 +171,97 @@ class MySpecialties extends StatelessWidget {
                         color: Colors.white),
                   ),
                 ),
-                Wrap(spacing: 15,
-                    // crossAxisAlignment: WrapCrossAlignment.center,
-                    children: const [
-                      SpecialtyIcon(
-                        icon: FontAwesomeIcons.utensils,
-                        label: 'Food',
-                      ),
-                      SpecialtyIcon(
-                        icon: FontAwesomeIcons.trainTram,
-                        label: 'Public Transport',
-                      ),
-                      SpecialtyIcon(
-                        icon: FontAwesomeIcons.ticket,
-                        label: 'Entertainment',
-                      ),
-                      SpecialtyIcon(
-                        icon: FontAwesomeIcons.camera,
-                        label: 'Photo Ops',
-                      ),
-                      SpecialtyIcon(
-                        icon: FontAwesomeIcons.basketShopping,
-                        label: 'Shopping',
-                      ),
-                      SpecialtyIcon(
-                        icon: FontAwesomeIcons.route,
-                        label: 'Navigation',
-                      ),
-                    ]),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 15,
+                    direction: Axis.horizontal,
+                    children: specialtySample
+                        .map((i) => SpecialtyChip(
+                            specialtiesList: selectedSpecialties,
+                            label: i.name,
+                            avatar: i.icon,
+                            selected: i.selected,
+                            onSelected: i.onSelected))
+                        .toList(),
+                  ),
+                ),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class SpecialtyChip extends StatefulWidget {
+  List<String> specialtiesList;
+  String label;
+  Icon? avatar;
+  Color? color;
+  bool selected;
+  bool? showCheckmark;
+  Function(bool)? onSelected;
+  SpecialtyChip({
+    Key? key,
+    required this.specialtiesList,
+    required this.label,
+    required this.avatar,
+    required this.selected,
+    this.showCheckmark,
+    this.color,
+    required this.onSelected,
+  }) : super(key: key);
+
+  @override
+  State<SpecialtyChip> createState() => _SpecialtyChipState();
+}
+
+class _SpecialtyChipState extends State<SpecialtyChip> {
+  @override
+  Widget build(BuildContext context) {
+    List<String> selectedList = widget.specialtiesList;
+
+    return BlocBuilder<OnboardingBloc, OnboardingState>(
+      builder: (context, state) {
+        if (state is OnboardingLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        if (state is OnboardingLoaded) {
+          return FilterChip(
+            label: Text(widget.label),
+            selected: widget.selected,
+            selectedColor: widget.color ?? widget.color,
+            avatar: widget.avatar ?? widget.avatar,
+            showCheckmark: widget.showCheckmark ?? true,
+            onSelected: widget.onSelected ??
+                (selected) {
+                  // * Add/Remove Specialty to/from User Object
+                  if (selected == true) {
+                    selectedList.add(widget.label);
+                    context.read<OnboardingBloc>().add(UpdateUser(
+                        user: state.user.copyWith(specialties: selectedList)));
+                  }
+                  if (selected != true) {
+                    selectedList.remove(widget.label);
+                    context.read<OnboardingBloc>().add(UpdateUser(
+                        user: state.user.copyWith(specialties: selectedList)));
+                  }
+                  // * Selected State Changes
+                  setState(() {
+                    widget.selected = selected;
+                  });
+                },
+          );
+        }
+        return const Center(
+          child: Text('Something Went Wrong...'),
+        );
+      },
     );
   }
 }
@@ -246,6 +353,7 @@ class MainProfileInfo extends StatelessWidget {
               }
               if (state is OnboardingLoaded) {
                 return TextFormField(
+                  keyboardType: TextInputType.name,
                   onChanged: (value) => context
                       .read<OnboardingBloc>()
                       .add(UpdateUser(user: state.user.copyWith(name: value))),
@@ -282,7 +390,7 @@ class MainProfileInfo extends StatelessWidget {
                     return const CircularProgressIndicator();
                   }
                   if (state is OnboardingLoaded) {
-                    return TextField(
+                    return TextFormField(
                       onChanged: (value) => context.read<OnboardingBloc>().add(
                           UpdateUser(user: state.user.copyWith(bio: value))),
                       maxLines: 3,
@@ -309,10 +417,11 @@ class MainProfileInfo extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                const Text('Connect Accounts:'),
                 SizedBox(
-                  child: Wrap(spacing: 20, children: const [
+                  child: Wrap(spacing: 25, children: const [
                     Icon(FontAwesomeIcons.instagram),
                     Icon(FontAwesomeIcons.facebook),
                     Icon(FontAwesomeIcons.tiktok),

@@ -1,13 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 
 class User extends Equatable {
   final String? id;
   final List<String>? types;
   final String? name, email, photo, username, bio, location;
   final Map<int, String>? reviews;
-  final Map<Icon, String>? specialties;
+  final List<String>? specialties;
 
   const User(
       {this.id,
@@ -62,7 +61,7 @@ class User extends Equatable {
     String? bio,
     String? location,
     Map<int, String>? reviews,
-    Map<Icon, String>? specialties,
+    List<String>? specialties,
   }) {
     return User(
       id: id ?? this.id,

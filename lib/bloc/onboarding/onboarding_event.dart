@@ -19,7 +19,7 @@ class StartOnboarding extends OnboardingEvent {
       username: '',
       types: [],
       location: '',
-      specialties: {},
+      specialties: [],
       reviews: {},
     ),
   });

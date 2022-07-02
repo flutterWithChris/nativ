@@ -142,7 +142,7 @@ class _SignupButtonState extends State<SignupButton> {
                         email: context.read<SignupCubit>().state.user!.email,
                         username: '',
                         reviews: const {},
-                        specialties: const {},
+                        specialties: const [],
                         types: const [],
                         bio: '',
                         photo: '');
@@ -229,7 +229,7 @@ class _GoogleSignupButtonState extends State<GoogleSignupButton> {
                         email: context.read<SignupCubit>().state.user!.email,
                         username: '',
                         reviews: const {},
-                        specialties: const {},
+                        specialties: const [],
                         types: const [],
                         bio: '',
                         photo: '');
@@ -262,8 +262,6 @@ class _GoogleSignupButtonState extends State<GoogleSignupButton> {
     );
   }
 }
-
-
 
 class NameInput extends StatelessWidget {
   const NameInput({
