@@ -174,10 +174,9 @@ class _SignupButtonState extends State<SignupButton> {
   }
 }
 
-class GoogleSignupButton extends StatelessWidget {
+class GoogleSignupButton extends StatefulWidget {
   final PageController pageController;
   var formKey = GlobalKey<FormState>();
-  final String googleClientId = dotenv.get('GOOGLE_SERVICE_CLIENT_ID');
 
   GoogleSignupButton({
     Key? key,
@@ -186,11 +185,19 @@ class GoogleSignupButton extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<GoogleSignupButton> createState() => _GoogleSignupButtonState();
+}
+
+class _GoogleSignupButtonState extends State<GoogleSignupButton> {
+  final String googleClientId = dotenv.get('GOOGLE_SERVICE_CLIENT_ID');
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<SignupCubit, SignupState>(
       listener: (context, state) {
         if (state.status == SignupStatus.success) {
-          pageController.animateToPage(pageController.page!.toInt() + 1,
+          widget.pageController.animateToPage(
+              widget.pageController.page!.toInt() + 1,
               duration: const Duration(milliseconds: 500),
               curve: Curves.easeInOut);
           /*  pageController.nextPage(
@@ -204,7 +211,8 @@ class GoogleSignupButton extends StatelessWidget {
             : Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15),
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: Colors.white),
+                  style: ElevatedButton.styleFrom(
+                      primary: const Color(0xffF5FCFF)),
                   onPressed: () async {
                     GoogleProviderConfiguration(
                       clientId: googleClientId,
@@ -212,6 +220,23 @@ class GoogleSignupButton extends StatelessWidget {
                     await context
                         .read<SignupCubit>()
                         .signUpWithGoogleCredentials();
+
+                    if (!mounted) return;
+                    User user = User(
+                        id: context.read<SignupCubit>().state.user!.uid,
+                        name: '',
+                        location: '',
+                        email: context.read<SignupCubit>().state.user!.email,
+                        username: '',
+                        reviews: const {},
+                        specialties: const {},
+                        types: const [],
+                        bio: '',
+                        photo: '');
+
+                    context
+                        .read<OnboardingBloc>()
+                        .add(StartOnboarding(user: user));
                   },
                   child: Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
@@ -238,59 +263,7 @@ class GoogleSignupButton extends StatelessWidget {
   }
 }
 
-class ProfileIcon extends StatelessWidget {
-  const ProfileIcon({
-    Key? key,
-  }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<OnboardingBloc, OnboardingState>(
-      builder: (context, state) {
-        if (state is OnboardingLoading) {
-          return const CircularProgressIndicator();
-        }
-        if (state is OnboardingLoaded) {
-          return InkWell(
-            onTap: () async {
-              ImagePicker picker = ImagePicker();
-              final XFile? image =
-                  await picker.pickImage(source: ImageSource.gallery);
-
-              if (image == null) {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text('No Image(s) Added!'),
-                  backgroundColor: Colors.redAccent,
-                ));
-              }
-
-              if (image != null) {
-                context
-                    .read<OnboardingBloc>()
-                    .add(UpdateUserImages(image: image));
-                print('Uploading.......');
-              }
-            },
-            child: Stack(
-              alignment: AlignmentDirectional.bottomEnd,
-              children: const [
-                CircleAvatar(
-                  radius: 40,
-                ),
-                Icon(
-                  Icons.add_circle,
-                  color: Colors.redAccent,
-                )
-              ],
-            ),
-          );
-        } else {
-          return const Text('Something went wrong.');
-        }
-      },
-    );
-  }
-}
 
 class NameInput extends StatelessWidget {
   const NameInput({

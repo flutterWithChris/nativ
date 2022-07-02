@@ -38,7 +38,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               const TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
       child: NavigationBar(
         animationDuration: const Duration(seconds: 1, milliseconds: 618),
-        //backgroundColor: Colors.tealAccent,
+        backgroundColor: const Color(0xffF5FCFF),
         destinations: menuItemList,
         selectedIndex: widget.index,
         onDestinationSelected: (index) {

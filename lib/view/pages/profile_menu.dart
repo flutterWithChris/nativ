@@ -11,48 +11,46 @@ class ProfileMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: Colors.white,
-        child: ListView(
-          children: [
-            // * Header Image
-            AspectRatio(
-              aspectRatio: 1.91 / 1,
-              child: Image.network(
-                'https://static.euronews.com/articles/stories/06/25/84/50/1200x675_cmsv2_f71b6679-918e-5672-8b87-8f3e17af759e-6258450.jpg',
-                fit: BoxFit.cover,
-              ),
+      backgroundColor: Colors.black,
+      body: ListView(
+        children: [
+          // * Header Image
+          AspectRatio(
+            aspectRatio: 1.91 / 1,
+            child: Image.network(
+              'https://static.euronews.com/articles/stories/06/25/84/50/1200x675_cmsv2_f71b6679-918e-5672-8b87-8f3e17af759e-6258450.jpg',
+              fit: BoxFit.cover,
             ),
+          ),
 
-            // * Main Content
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 12),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Stack(
-                    alignment: AlignmentDirectional.topEnd,
-                    children: const [
-                      MainProfileInfo(),
-                      Padding(
-                        padding: EdgeInsets.only(right: 20),
-                        child: ProfileIcon(),
-                      ),
-                    ],
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 20, bottom: 20),
-                    child: PublicReviews(),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(24.0),
-                    child: MySpecialties(),
-                  )
-                ],
-              ),
+          // * Main Content
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 12),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Stack(
+                  alignment: AlignmentDirectional.topEnd,
+                  children: const [
+                    MainProfileInfo(),
+                    Padding(
+                      padding: EdgeInsets.only(right: 20),
+                      child: ProfileIcon(),
+                    ),
+                  ],
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(top: 20, bottom: 20),
+                  child: PublicReviews(),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(24.0),
+                  child: MySpecialties(),
+                )
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

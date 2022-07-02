@@ -82,6 +82,7 @@ class LoginForm extends StatelessWidget {
                           padding: EdgeInsets.all(8.0),
                           child: CircleAvatar(
                             radius: 40.0,
+                            backgroundColor: Color(0xff6E8691),
                           ),
                         ),
                         Padding(
@@ -214,7 +215,8 @@ class SignupButton extends StatelessWidget {
         TextSpan(
           style: TextStyle(fontSize: 16),
           children: [
-            TextSpan(text: 'New? '),
+            TextSpan(
+                text: 'New? ', style: TextStyle(fontWeight: FontWeight.bold)),
             TextSpan(
               text: 'Sign Up',
             ),

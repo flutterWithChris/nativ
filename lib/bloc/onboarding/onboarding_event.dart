@@ -14,6 +14,7 @@ class StartOnboarding extends OnboardingEvent {
       id: '',
       name: '',
       email: '',
+      bio: '',
       photo: '',
       username: '',
       types: [],

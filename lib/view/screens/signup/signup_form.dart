@@ -5,6 +5,7 @@ import 'package:nativ/bloc/location/location_bloc.dart';
 import 'package:nativ/bloc/onboarding/onboarding_bloc.dart';
 import 'package:nativ/bloc/signup/signup_cubit.dart';
 import 'package:nativ/data/model/place.dart';
+import 'package:nativ/view/pages/profile_setup.dart';
 import 'package:nativ/view/screens/signup/basic_info.dart';
 import 'package:nativ/view/screens/signup/user_type.dart';
 import 'package:nativ/view/widgets/location_searchbar.dart';
@@ -58,18 +59,19 @@ class _SignupFormState extends State<SignupForm> {
             SignupBasicInfoPage(pageController: widget.controller),
             SetLocationScreen(pageController: widget.controller),
             UserTypePage(controller: controller),
-            BlocBuilder<SignupCubit, SignupState>(
+            BlocBuilder<OnboardingBloc, OnboardingState>(
               builder: (context, state) {
-                if (state.isTraveler && state.isNativ) {
-                  return const NativAndTravelerProfileSetup();
+                if (state is OnboardingLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
                 }
-                if (state.isTraveler && state.isNativ == false) {
-                  return const TravelerProfileSetup();
+                if (state is OnboardingLoaded) {
+                  return const ProfileSetup();
                 }
-                if (state.isNativ && state.isTraveler == false) {
-                  return const NativProfileSetup();
-                }
-                return Container();
+                return const Center(
+                  child: Text('Something Went Wrong'),
+                );
               },
             ),
             Container(
@@ -469,7 +471,11 @@ class SetLocationScreen extends StatelessWidget {
                                                     milliseconds: 500),
                                                 curve: Curves.easeInOut);
                                           },
-                                          child: const Text('Continue')),
+                                          child: const Text(
+                                            'Continue',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          )),
                                     ],
                                   ),
                                 ),
@@ -501,7 +507,7 @@ class SetLocationScreen extends StatelessWidget {
                         );
                       }
                       return const Center(
-                        child: Text('Something Went Wrong'),
+                        child: Text('Something Went Wrong!'),
                       );
                     },
                   ),

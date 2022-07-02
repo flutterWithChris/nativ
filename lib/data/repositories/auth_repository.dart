@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nativ/data/model/user.dart';
 
-
 class AuthRepository {
   final firebase_auth.FirebaseAuth _firebaseAuth;
 
@@ -63,7 +62,7 @@ class AuthRepository {
     }
   }
 
-  Future<void> signUpWithGoogle() async {
+  Future<firebase_auth.User?> signUpWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -75,8 +74,10 @@ class AuthRepository {
         idToken: googleAuth?.idToken,
       );
 
-      await firebase_auth.FirebaseAuth.instance
+      var googleCredentials = await firebase_auth.FirebaseAuth.instance
           .signInWithCredential(credential);
+      final user = googleCredentials.user;
+      return user;
 
       /*   DatabaseRepository().storeUserInfoDB(
           _firebaseAuth.currentUser!.uid,

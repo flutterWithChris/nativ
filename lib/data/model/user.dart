@@ -66,6 +66,7 @@ class User extends Equatable {
   }) {
     return User(
       id: id ?? this.id,
+      bio: bio ?? this.bio,
       types: types ?? this.types,
       name: name ?? this.name,
       email: email ?? this.email,

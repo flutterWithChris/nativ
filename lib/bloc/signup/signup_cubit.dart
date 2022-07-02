@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
-
 import 'package:nativ/data/repositories/auth_repository.dart';
 
 part 'signup_state.dart';
@@ -32,7 +31,9 @@ class SignupCubit extends Cubit<SignupState> {
 
   Future<void> signupFormSubmitted() async {
     if (state.status == SignupStatus.submitting) return;
-    emit(state.copyWith(status: SignupStatus.submitting,));
+    emit(state.copyWith(
+      status: SignupStatus.submitting,
+    ));
     try {
       var user = await _authRepository.signUp(
           email: state.email, password: state.password);
@@ -49,8 +50,8 @@ class SignupCubit extends Cubit<SignupState> {
       emit(state.copyWith(status: SignupStatus.submitting));
     }
     try {
-      await _authRepository.signUpWithGoogle();
-      emit(state.copyWith(status: SignupStatus.success));
+      var user = await _authRepository.signUpWithGoogle();
+      emit(state.copyWith(status: SignupStatus.success, user: user));
     } catch (_) {
       emit(state.copyWith(status: SignupStatus.error));
     }
