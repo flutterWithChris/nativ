@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterfire_ui/auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -7,11 +8,16 @@ import 'package:nativ/bloc/app/app_bloc.dart';
 import 'package:nativ/bloc/onboarding/onboarding_bloc.dart';
 import 'package:nativ/data/model/specialty.dart';
 
-class ProfileSetup extends StatelessWidget {
+class ProfileSetup extends StatefulWidget {
   const ProfileSetup({Key? key}) : super(key: key);
 
   static Page page() => const MaterialPage<void>(child: ProfileSetup());
 
+  @override
+  State<ProfileSetup> createState() => _ProfileSetupState();
+}
+
+class _ProfileSetupState extends State<ProfileSetup> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +63,7 @@ class ProfileSetup extends StatelessWidget {
                         widthFactor: 0.9, child: Divider()),
                   ),
                   const Padding(
-                    padding: EdgeInsets.all(24.0),
+                    padding: EdgeInsets.all(8.0),
                     child: MySpecialties(),
                   )
                 ],
@@ -103,58 +109,74 @@ class MySpecialties extends StatefulWidget {
 class _MySpecialtiesState extends State<MySpecialties> {
   static List<String> selectedSpecialties = [];
 
-  List<Specialty> specialtySample = [
-    Specialty(
-      name: 'Entertainment',
-      selected: false,
-      icon: const Icon(FontAwesomeIcons.music),
-    ),
-    Specialty(
-      name: 'Nightlife',
-      selected: true,
-      icon: const Icon(FontAwesomeIcons.beerMugEmpty),
-    ),
-    Specialty(
-      name: 'Food',
-      icon: const Icon(
-        FontAwesomeIcons.utensils,
-        size: 12,
-      ),
-      selected: true,
-    ),
-    Specialty(
-      name: 'Navigation',
-      selected: false,
-      icon: const Icon(FontAwesomeIcons.route),
-    ),
-    Specialty(
-      name: 'Nature',
-      selected: true,
-      color: Colors.brown,
-      icon: const Icon(
-        FontAwesomeIcons.tree,
-        color: Colors.brown,
-      ),
-    ),
-    Specialty(
-      name: 'Wildlife',
-      selected: false,
-      color: Colors.brown,
-      icon: const Icon(FontAwesomeIcons.kiwiBird),
-    ),
-  ];
   @override
   Widget build(BuildContext context) {
+    List<Specialty> specialtySample = [
+      Specialty(
+        name: const Text('Entertainment'),
+        color: Colors.orangeAccent,
+        icon: const Icon(
+          FontAwesomeIcons.music,
+          size: 21,
+        ),
+      ),
+      Specialty(
+        name: const Text(
+          'Local Bars',
+          style: TextStyle(color: Colors.white),
+        ),
+        color: Colors.black54,
+        icon: const Icon(
+          FontAwesomeIcons.beerMugEmpty,
+          size: 21,
+          color: Colors.white,
+        ),
+      ),
+      Specialty(
+        name: const Text('Local Food'),
+        icon: const Icon(
+          FontAwesomeIcons.utensils,
+          size: 20,
+        ),
+      ),
+      Specialty(
+        name: const Text('Navigation'),
+        color: Colors.greenAccent,
+        icon: const Icon(
+          FontAwesomeIcons.route,
+          size: 22,
+          color: Colors.lightBlue,
+        ),
+      ),
+      Specialty(
+        name: const Text('Nature'),
+        color: Colors.lightBlueAccent,
+        icon: const Icon(
+          FontAwesomeIcons.tree,
+          color: Colors.green,
+          size: 22,
+        ),
+      ),
+      Specialty(
+        name: const Text('Wildlife'),
+        color: Colors.lightGreenAccent,
+        icon: const Icon(
+          FontAwesomeIcons.kiwiBird,
+          size: 21,
+          color: Colors.brown,
+        ),
+      ),
+    ];
     return ClipRRect(
       borderRadius: BorderRadius.circular(25),
       child: Container(
-        color: const Color(0xffBFD5DF),
+        // color: const Color(0xffBFD5DF),
         child: Container(
           //color: Colors.black,
           //    transformAlignment: Alignment.center,
           alignment: Alignment.center,
           width: 400,
-          height: 275,
+          height: 250,
           decoration: const BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(20))),
           child: Align(
@@ -162,13 +184,13 @@ class _MySpecialtiesState extends State<MySpecialties> {
             child: Column(
               children: [
                 const Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(8.0),
                   child: Text(
-                    'My Specialties',
+                    'What are your specialties?',
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Colors.white),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
                   ),
                 ),
                 Padding(
@@ -181,6 +203,7 @@ class _MySpecialtiesState extends State<MySpecialties> {
                         .map((i) => SpecialtyChip(
                             specialtiesList: selectedSpecialties,
                             label: i.name,
+                            color: i.color,
                             avatar: i.icon,
                             selected: i.selected,
                             onSelected: i.onSelected))
@@ -198,10 +221,10 @@ class _MySpecialtiesState extends State<MySpecialties> {
 
 class SpecialtyChip extends StatefulWidget {
   List<String> specialtiesList;
-  String label;
+  Text label;
   Icon? avatar;
   Color? color;
-  bool selected;
+  bool? selected;
   bool? showCheckmark;
   Function(bool)? onSelected;
   SpecialtyChip({
@@ -232,9 +255,9 @@ class _SpecialtyChipState extends State<SpecialtyChip> {
           );
         }
         if (state is OnboardingLoaded) {
-          return FilterChip(
-            label: Text(widget.label),
-            selected: widget.selected,
+          return InputChip(
+            label: widget.label,
+            selected: widget.selected ?? false,
             selectedColor: widget.color ?? widget.color,
             avatar: widget.avatar ?? widget.avatar,
             showCheckmark: widget.showCheckmark ?? true,
@@ -242,12 +265,12 @@ class _SpecialtyChipState extends State<SpecialtyChip> {
                 (selected) {
                   // * Add/Remove Specialty to/from User Object
                   if (selected == true) {
-                    selectedList.add(widget.label);
+                    selectedList.add(widget.label.data!);
                     context.read<OnboardingBloc>().add(UpdateUser(
                         user: state.user.copyWith(specialties: selectedList)));
                   }
                   if (selected != true) {
-                    selectedList.remove(widget.label);
+                    selectedList.remove(widget.label.data!);
                     context.read<OnboardingBloc>().add(UpdateUser(
                         user: state.user.copyWith(specialties: selectedList)));
                   }
@@ -415,17 +438,20 @@ class MainProfileInfo extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 const Text('Connect Accounts:'),
                 SizedBox(
-                  child: Wrap(spacing: 25, children: const [
-                    Icon(FontAwesomeIcons.instagram),
-                    Icon(FontAwesomeIcons.facebook),
-                    Icon(FontAwesomeIcons.tiktok),
-                    Icon(FontAwesomeIcons.twitter),
+                  child: Wrap(spacing: 16, children: const [
+                    FacebookSignInIconButton(clientId: ''),
+                    TwitterSignInIconButton(
+                      apiKey: '',
+                      apiSecretKey: '',
+                      redirectUri: '',
+                    ),
+                    AppleSignInIconButton(),
                   ]),
                 ),
               ],
@@ -481,7 +507,7 @@ class _ProfileIconState extends State<ProfileIcon> {
                 CircleAvatar(
                   backgroundColor: Color(0xffBFD5DF),
                   foregroundColor: Colors.black87,
-                  radius: 38,
+                  radius: 36,
                   child: Center(
                     child: Icon(Icons.add_a_photo_rounded),
                   ),
