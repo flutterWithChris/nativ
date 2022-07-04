@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 enum AppTheme {
@@ -37,7 +38,19 @@ final appThemeData = {
     ),
   ),
   AppTheme.Dark: ThemeData(
-    scaffoldBackgroundColor: Colors.black,
+    drawerTheme: DrawerThemeData(
+        backgroundColor: const Color(0xff515A5E).withAlpha(255)),
+    appBarTheme: AppBarTheme(
+        actionsIconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: const Color(0xff515A5E).withAlpha(255),
+        titleTextStyle: TextStyle(
+            fontFamily: GoogleFonts.lekton().fontFamily,
+            color: Colors.white,
+            fontSize: 22),
+        systemOverlayStyle: SystemUiOverlayStyle.light),
+    //  canvasColor: const Color(0xff515A5E),
+    // backgroundColor: const Color(0xff515A5E),
+    scaffoldBackgroundColor: const Color(0xff35515E).withAlpha(255),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: Colors.white70,
@@ -45,13 +58,15 @@ final appThemeData = {
           borderRadius: BorderRadius.circular(45.0),
           borderSide: const BorderSide(width: 0, style: BorderStyle.none)),
     ),
-    textTheme: GoogleFonts.lektonTextTheme(),
+    textTheme: GoogleFonts.lektonTextTheme()
+        .apply(bodyColor: Colors.white, displayColor: Colors.white),
     chipTheme: const ChipThemeData(),
-    primaryColor: Colors.white,
-    // colorSchemeSeed: const Color.fromARGB(255, 76, 94, 255),
+    // primaryColor: const Color(0xff515A5E),
+    colorSchemeSeed: const Color(0xff515A5E).withAlpha(255),
     useMaterial3: true,
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
+        textStyle: const TextStyle(fontWeight: FontWeight.bold),
         fixedSize: const Size(200, 35),
       ),
     ),

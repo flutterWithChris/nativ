@@ -210,33 +210,27 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class MainAppBar extends StatelessWidget {
+class MainAppBar extends StatefulWidget {
   const MainAppBar({
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<MainAppBar> createState() => _MainAppBarState();
+}
+
+class _MainAppBarState extends State<MainAppBar> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BottomNavBarCubit, BottomNavBarState>(
       builder: (context, state) {
         if (state.bottomNavBarItem == BottomNavBarItem.profile) {
           return AppBar(
-              actions: [
-                TextButton(
-                  onPressed: () =>
-                      context.read<AppBloc>().add(AppLogoutRequest()),
-                  child: Wrap(
-                    spacing: 10,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: const [
-                      Text(
-                        'Logout',
-                      ),
-                      Icon(
-                        Icons.logout_rounded,
-                      ),
-                    ],
-                  ),
+              actions: const [
+                Padding(
+                  padding: EdgeInsets.only(right: 24.0),
+                  child: SizedBox(
+                      width: 80, child: FittedBox(child: ThemeSwitcher())),
                 ),
               ],
               title: PopupMenuButton(

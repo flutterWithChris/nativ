@@ -11,7 +11,6 @@ class ProfileMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       body: ListView(
         children: [
           // * Header Image
@@ -25,7 +24,8 @@ class ProfileMenu extends StatelessWidget {
 
           // * Main Content
           Padding(
-            padding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 12),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 14.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -214,7 +214,7 @@ class MainProfileInfo extends StatelessWidget {
       //leading: ProfileIcon(),
       title: Wrap(
         crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 10,
+        spacing: 14,
         children: const [
           Text(
             'Thorin Oakenshield',
@@ -222,7 +222,7 @@ class MainProfileInfo extends StatelessWidget {
           ),
           Icon(
             FontAwesomeIcons.circleCheck,
-            color: Colors.blueAccent,
+            color: Colors.white,
             size: 20,
           )
         ],
@@ -232,31 +232,44 @@ class MainProfileInfo extends StatelessWidget {
         children: [
           Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 10,
-              children: const [
-                Text('Auckland, NZ'),
-                SizedBox(
-                  height: 30,
-                  child: Chip(
-                    backgroundColor: Colors.orange,
-                    label: Text(
-                      'Top Rated',
-                      style: TextStyle(color: Colors.white),
+              spacing: 16,
+              children: [
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 10,
+                  children: const [
+                    Icon(
+                      FontAwesomeIcons.mapLocation,
+                      color: Colors.white,
+                      size: 15,
                     ),
-                    visualDensity: VisualDensity.compact,
+                    Text('Auckland, NZ'),
+                  ],
+                ),
+                const SizedBox(
+                  height: 30,
+                  child: FittedBox(
+                    child: Chip(
+                      backgroundColor: Colors.orange,
+                      label: Text(
+                        'Top Rated',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                      visualDensity: VisualDensity.compact,
+                    ),
                   ),
                 )
               ]),
           const SizedBox(
-            height: 5,
+            height: 10,
           ),
           const Text(
             'I’m a born & raised New Zealander who loves hiking & finding the best food.',
-            style: TextStyle(color: Colors.black87),
           ),
           Center(
             child: Padding(
-              padding: const EdgeInsets.only(top: 10),
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
               child: ElevatedButton(
                   onPressed: () {
                     print('pressed');
@@ -270,39 +283,49 @@ class MainProfileInfo extends StatelessWidget {
                     children: const [
                       Text(
                         'Connect ',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Icon(
                         FontAwesomeIcons.connectdevelop,
-                        color: Colors.white,
                       )
                     ],
                   )),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ActionChip(
-                  label: const Text('Message Me'),
-                  onPressed: () {},
-                  avatar: const Icon(
-                    FontAwesomeIcons.paperPlane,
-                    size: 20,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ActionChip(
+                backgroundColor: const Color(0xff93A3AB),
+                label: const Text(
+                  'Message Me',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+                onPressed: () {},
+                avatar: const Icon(
+                  FontAwesomeIcons.paperPlane,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+              SizedBox(
+                child: Wrap(spacing: 20, children: const [
+                  Icon(
+                    FontAwesomeIcons.instagram,
+                    color: Colors.white,
                   ),
-                ),
-                SizedBox(
-                  child: Wrap(spacing: 20, children: const [
-                    Icon(FontAwesomeIcons.instagram),
-                    Icon(FontAwesomeIcons.facebook),
-                    Icon(FontAwesomeIcons.tiktok),
-                    Icon(FontAwesomeIcons.twitter),
-                  ]),
-                ),
-              ],
-            ),
+                  Icon(
+                    FontAwesomeIcons.facebook,
+                    color: Colors.white,
+                  ),
+                  Icon(
+                    FontAwesomeIcons.twitter,
+                    color: Colors.white,
+                  ),
+                ]),
+              ),
+            ],
           )
         ],
       ),

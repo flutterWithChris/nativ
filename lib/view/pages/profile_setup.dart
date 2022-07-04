@@ -5,8 +5,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:nativ/bloc/app/app_bloc.dart';
+import 'package:nativ/bloc/location/location_bloc.dart';
 import 'package:nativ/bloc/onboarding/onboarding_bloc.dart';
 import 'package:nativ/data/model/specialty.dart';
+import 'package:nativ/view/widgets/location_searchbar.dart';
 
 class ProfileSetup extends StatefulWidget {
   const ProfileSetup({Key? key}) : super(key: key);
@@ -40,7 +42,6 @@ class _ProfileSetupState extends State<ProfileSetup> {
                     ],
                   )),
                 )),
-
             // * Main Content
             Padding(
               padding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 12),
@@ -62,16 +63,76 @@ class _ProfileSetupState extends State<ProfileSetup> {
                     child: FractionallySizedBox(
                         widthFactor: 0.9, child: Divider()),
                   ),
+                  // * Specialties
                   const Padding(
                     padding: EdgeInsets.all(8.0),
                     child: MySpecialties(),
-                  )
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: FractionallySizedBox(
+                        widthFactor: 0.9, child: Divider()),
+                  ),
+                  // * Add Trips
+                  const AddTripsWidget(),
                 ],
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class AddTripsWidget extends StatefulWidget {
+  const AddTripsWidget({Key? key}) : super(key: key);
+
+  @override
+  State<AddTripsWidget> createState() => _AddTripsWidgetState();
+}
+
+class _AddTripsWidgetState extends State<AddTripsWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(children: [
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            'Where have you visited?',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+        ),
+        FractionallySizedBox(
+          widthFactor: 0.9,
+          child: BlocBuilder<LocationBloc, LocationState>(
+            builder: ((context, state) {
+              if (state is LocationSearchbarFocused ||
+                  state is LocationSearchStarted) {
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 100),
+                  height: 400,
+                  child: LocationSearchBar(
+                    hintText: 'Search Cities...',
+                  ),
+                );
+              } else {
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 100),
+                  height: 78,
+                  child: LocationSearchBar(
+                    hintText: 'Search Cities...',
+                  ),
+                );
+              }
+            }),
+          ),
+        ),
+      ]),
     );
   }
 }
@@ -134,6 +195,7 @@ class _MySpecialtiesState extends State<MySpecialties> {
       ),
       Specialty(
         name: const Text('Local Food'),
+        color: Colors.white,
         icon: const Icon(
           FontAwesomeIcons.utensils,
           size: 20,

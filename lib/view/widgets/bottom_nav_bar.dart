@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nativ/bloc/bottom_nav_bar/bottom_nav_bar_cubit.dart';
+import 'package:nativ/bloc/settings/theme/bloc/theme_bloc.dart';
 
 class BottomNavBar extends StatefulWidget {
   int index;
@@ -29,29 +30,68 @@ class _BottomNavBarState extends State<BottomNavBar> {
     BottomNavBarCubit bottomNavBarBloc =
         BlocProvider.of<BottomNavBarCubit>(context);
 
-    return NavigationBarTheme(
-      data: NavigationBarThemeData(
-          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-          height: 70,
-          indicatorColor: Colors.white.withOpacity(0.5),
-          labelTextStyle: MaterialStateProperty.all(
-              const TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
-      child: NavigationBar(
-        animationDuration: const Duration(seconds: 1, milliseconds: 618),
-        backgroundColor: const Color(0xffF5FCFF),
-        destinations: menuItemList,
-        selectedIndex: widget.index,
-        onDestinationSelected: (index) {
-          if (index == 0) {
-            bottomNavBarBloc.getNavBarItem(BottomNavBarItem.profile);
-          } else if (index == 1) {
-            bottomNavBarBloc.getNavBarItem(BottomNavBarItem.home);
-          } else if (index == 2) {
-            bottomNavBarBloc.getNavBarItem(BottomNavBarItem.settings);
-          }
-        },
-        elevation: 16.0,
-      ),
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      buildWhen: (previous, current) => previous.themeData != current.themeData,
+      builder: (context, state) {
+        if (state.themeData == ThemeData.light()) {
+          return NavigationBarTheme(
+              data: NavigationBarThemeData(
+                  labelBehavior:
+                      NavigationDestinationLabelBehavior.onlyShowSelected,
+                  height: 70,
+                  indicatorColor: Colors.white.withOpacity(0.5),
+                  labelTextStyle: MaterialStateProperty.all(const TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.bold))),
+              child: NavigationBar(
+                animationDuration:
+                    const Duration(seconds: 1, milliseconds: 618),
+                backgroundColor: const Color(0xff515A5E).withAlpha(255),
+                destinations: menuItemList,
+                selectedIndex: widget.index,
+                onDestinationSelected: (index) {
+                  if (index == 0) {
+                    bottomNavBarBloc.getNavBarItem(BottomNavBarItem.profile);
+                  } else if (index == 1) {
+                    bottomNavBarBloc.getNavBarItem(BottomNavBarItem.home);
+                  } else if (index == 2) {
+                    bottomNavBarBloc.getNavBarItem(BottomNavBarItem.settings);
+                  }
+                },
+                elevation: 16.0,
+              ));
+        } else {
+          return NavigationBarTheme(
+              data: NavigationBarThemeData(
+                  labelBehavior:
+                      NavigationDestinationLabelBehavior.onlyShowSelected,
+                  height: 70,
+                  indicatorColor: const Color(0xff93A3AB),
+                  iconTheme: const MaterialStatePropertyAll(IconThemeData(
+                    color: Colors.white,
+                  )),
+                  labelTextStyle: MaterialStateProperty.all(const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white))),
+              child: NavigationBar(
+                animationDuration:
+                    const Duration(seconds: 1, milliseconds: 618),
+                backgroundColor: const Color(0xff515A5E).withAlpha(255),
+                destinations: menuItemList,
+                selectedIndex: widget.index,
+                onDestinationSelected: (index) {
+                  if (index == 0) {
+                    bottomNavBarBloc.getNavBarItem(BottomNavBarItem.profile);
+                  } else if (index == 1) {
+                    bottomNavBarBloc.getNavBarItem(BottomNavBarItem.home);
+                  } else if (index == 2) {
+                    bottomNavBarBloc.getNavBarItem(BottomNavBarItem.settings);
+                  }
+                },
+                elevation: 16.0,
+              ));
+        }
+      },
     );
   }
 }

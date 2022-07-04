@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutterfire_ui/auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:nativ/bloc/onboarding/onboarding_bloc.dart';
 import 'package:nativ/bloc/signup/signup_cubit.dart';
 import 'package:nativ/data/model/user.dart';
@@ -134,6 +133,7 @@ class _SignupButtonState extends State<SignupButton> {
                   if (widget.formKey.currentState!.validate()) {
                     print('Sign in Clicked');
                     await context.read<SignupCubit>().signupFormSubmitted();
+                    // * Create User Object
                     if (!mounted) return;
                     User user = User(
                         id: context.read<SignupCubit>().state.user!.uid,
@@ -146,7 +146,7 @@ class _SignupButtonState extends State<SignupButton> {
                         types: const [],
                         bio: '',
                         photo: '');
-
+                    // * Start Onboarding Event
                     context
                         .read<OnboardingBloc>()
                         .add(StartOnboarding(user: user));

@@ -21,19 +21,19 @@ class SettingsMenu extends StatelessWidget {
           children: const [
             ThemeSwitcher(),
             SettingsMenuItem(
-              leadingIcon: Icon(Icons.person),
+              leadingIcon: Icons.person,
               label: 'Account Info',
-              trailingIcon: Icon(Icons.arrow_forward),
+              trailingIcon: Icons.arrow_forward,
             ),
             SettingsMenuItem(
-              leadingIcon: Icon(Icons.app_settings_alt_outlined),
+              leadingIcon: Icons.app_settings_alt_outlined,
               label: 'App Settings',
-              trailingIcon: Icon(Icons.arrow_forward),
+              trailingIcon: Icons.arrow_forward,
             ),
             SettingsMenuItem(
-              leadingIcon: Icon(Icons.question_mark_rounded),
+              leadingIcon: Icons.question_mark_rounded,
               label: 'Support & Help',
-              trailingIcon: Icon(Icons.arrow_forward),
+              trailingIcon: Icons.arrow_forward,
             ),
           ],
         ),
@@ -66,9 +66,9 @@ class ThemeSwitcher extends StatelessWidget {
 }
 
 class SettingsMenuItem extends StatelessWidget {
-  final Icon leadingIcon;
+  final IconData leadingIcon;
   final String label;
-  final Icon trailingIcon;
+  final IconData trailingIcon;
   const SettingsMenuItem({
     Key? key,
     required this.leadingIcon,
@@ -78,22 +78,56 @@ class SettingsMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ListTile(
-          minVerticalPadding: 25,
-          leading: leadingIcon,
-          title: Text(
-            label,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium!
-                .copyWith(fontWeight: FontWeight.bold),
+    return BlocProvider.value(
+      value: context.read<ThemeBloc>(),
+      child: Column(
+        children: [
+          BlocBuilder<ThemeBloc, ThemeState>(
+            buildWhen: (previous, current) =>
+                previous.themeData != current.themeData,
+            builder: (context, state) {
+              if (state.themeData == ThemeData.light()) {
+                return ListTile(
+                  minVerticalPadding: 25,
+                  leading: Icon(
+                    leadingIcon,
+                  ),
+                  title: Text(
+                    label,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  trailing: Icon(trailingIcon),
+                );
+              } else {
+                return ListTile(
+                  minVerticalPadding: 25,
+                  leading: SizedBox(
+                    height: double.infinity,
+                    child: Icon(
+                      leadingIcon,
+                      color: Colors.white,
+                    ),
+                  ),
+                  title: Text(
+                    label,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  trailing: SizedBox(
+                      height: double.infinity,
+                      child: (Icon(trailingIcon, color: Colors.white))),
+                );
+              }
+            },
           ),
-          trailing: trailingIcon,
-        ),
-        const Divider(),
-      ],
+          const Divider(),
+        ],
+      ),
     );
   }
 }
