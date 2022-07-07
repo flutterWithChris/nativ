@@ -44,7 +44,7 @@ class _LocationSearchBarState extends State<RegionAndCitySearchBar> {
       openAxisAlignment: 0.0,
       width: 500,
       height: 48,
-      scrollPadding: const EdgeInsets.only(top: 5, bottom: 5),
+      scrollPadding: const EdgeInsets.only(top: 5, bottom: 100),
       elevation: 1.0,
       onFocusChanged: (focus) {
         if (focus == true) {

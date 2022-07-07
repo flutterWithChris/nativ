@@ -7,6 +7,7 @@ class User extends Equatable {
   final String? name, email, photo, username, bio, location;
   final Map<int, String>? reviews;
   final List<String>? specialties;
+  final List<String>? visitedPlaces;
 
   const User(
       {this.id,
@@ -18,21 +19,22 @@ class User extends Equatable {
       this.location,
       this.reviews,
       this.specialties,
-      this.username});
+      this.username,
+      this.visitedPlaces});
 
-  static User fromSnapshot(DocumentSnapshot snap) {
+  static User fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snap) {
     User user = User(
-      id: snap['id'],
-      types: snap['types'],
-      name: snap['name'],
-      photo: snap['photo'],
-      username: snap['username'],
-      email: snap['email'],
-      location: snap['location'],
-      bio: snap['bio'],
-      reviews: snap['reviews'],
-      specialties: snap['specialties'],
-    );
+        id: snap['id'],
+        types: List.from(snap['types']),
+        name: snap['name'],
+        photo: snap['photo'],
+        username: snap['username'],
+        email: snap['email'],
+        location: snap['location'],
+        bio: snap['bio'],
+        reviews: Map.from(snap['reviews']),
+        specialties: List.from(snap['specialties']),
+        visitedPlaces: List.from(snap['visitedPlaces']));
     return user;
   }
 
@@ -48,6 +50,7 @@ class User extends Equatable {
       'bio': bio,
       'reviews': reviews,
       'specialties': specialties,
+      'visitedPlaces': visitedPlaces,
     };
   }
 
@@ -62,6 +65,7 @@ class User extends Equatable {
     String? location,
     Map<int, String>? reviews,
     List<String>? specialties,
+    List<String>? visitedPlaces,
   }) {
     return User(
       id: id ?? this.id,
@@ -74,6 +78,7 @@ class User extends Equatable {
       location: location ?? this.location,
       reviews: reviews ?? this.reviews,
       specialties: specialties ?? this.specialties,
+      visitedPlaces: visitedPlaces ?? this.visitedPlaces,
     );
   }
 
@@ -94,6 +99,7 @@ class User extends Equatable {
         bio,
         reviews,
         specialties,
-        types
+        types,
+        visitedPlaces,
       ];
 }

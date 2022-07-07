@@ -71,6 +71,14 @@ class SignupBasicInfoPage extends StatelessWidget {
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ),
+                            Wrap(
+                              spacing: 10,
+                              children: const [
+                                GoogleSignInIconButton(clientId: 'clientId'),
+                                FacebookSignInIconButton(clientId: 'clientId'),
+                                AppleSignInIconButton(),
+                              ],
+                            ),
                             GoogleSignupButton(
                                 formKey: signupformKey,
                                 pageController: pageController)
@@ -136,16 +144,18 @@ class _SignupButtonState extends State<SignupButton> {
                     // * Create User Object
                     if (!mounted) return;
                     User user = User(
-                        id: context.read<SignupCubit>().state.user!.uid,
-                        name: '',
-                        location: '',
-                        email: context.read<SignupCubit>().state.user!.email,
-                        username: '',
-                        reviews: const {},
-                        specialties: const [],
-                        types: const [],
-                        bio: '',
-                        photo: '');
+                      id: context.read<SignupCubit>().state.user!.uid,
+                      name: '',
+                      location: '',
+                      email: context.read<SignupCubit>().state.user!.email,
+                      username: '',
+                      reviews: const {},
+                      specialties: const [],
+                      types: const [],
+                      bio: '',
+                      photo: '',
+                      visitedPlaces: const [],
+                    );
                     // * Start Onboarding Event
                     context
                         .read<OnboardingBloc>()
@@ -210,9 +220,9 @@ class _GoogleSignupButtonState extends State<GoogleSignupButton> {
             ? const CircularProgressIndicator()
             : Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      primary: const Color(0xffF5FCFF)),
+                child: IconButton(
+                  icon: const Icon(FontAwesomeIcons.google),
+                  splashColor: Colors.white,
                   onPressed: () async {
                     GoogleProviderConfiguration(
                       clientId: googleClientId,
@@ -232,30 +242,13 @@ class _GoogleSignupButtonState extends State<GoogleSignupButton> {
                         specialties: const [],
                         types: const [],
                         bio: '',
-                        photo: '');
+                        photo: '',
+                        visitedPlaces: const []);
 
                     context
                         .read<OnboardingBloc>()
                         .add(StartOnboarding(user: user));
                   },
-                  child: Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    spacing: 15,
-                    children: [
-                      Image.network(
-                        'http://pngimg.com/uploads/google/google_PNG19635.png',
-                        height: 30,
-                        errorBuilder: (context, error, stackTrace) =>
-                            const Icon(
-                          FontAwesomeIcons.google,
-                          color: Colors.black54,
-                        ),
-                      ),
-                      const Text(
-                        'Sign Up With Google',
-                      )
-                    ],
-                  ),
                 ),
               );
       },

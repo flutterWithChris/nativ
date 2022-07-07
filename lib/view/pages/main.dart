@@ -96,7 +96,6 @@ class AppView extends StatelessWidget {
               home: FlowBuilder(
                 state: context.select((AppBloc bloc) => bloc.state.status),
                 onGeneratePages: onGenerateAppViewPages,
-                
               ),
             );
           },

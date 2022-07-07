@@ -7,8 +7,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:nativ/bloc/app/app_bloc.dart';
 import 'package:nativ/bloc/location/location_bloc.dart';
 import 'package:nativ/bloc/onboarding/onboarding_bloc.dart';
+import 'package:nativ/bloc/signup/signup_cubit.dart';
+import 'package:nativ/data/model/place.dart';
 import 'package:nativ/data/model/specialty.dart';
-import 'package:nativ/view/widgets/location_searchbar.dart';
+import 'package:nativ/view/widgets/region_city_searchbar.dart';
 
 class ProfileSetup extends StatefulWidget {
   const ProfileSetup({Key? key}) : super(key: key);
@@ -20,10 +22,11 @@ class ProfileSetup extends StatefulWidget {
 }
 
 class _ProfileSetupState extends State<ProfileSetup> {
+  List<String>? traveledPlaces = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: Form(
         // color: Colors.white,
         child: ListView(
           children: [
@@ -65,14 +68,11 @@ class _ProfileSetupState extends State<ProfileSetup> {
                   ),
                   // * Specialties
                   const Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
                     child: MySpecialties(),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: FractionallySizedBox(
-                        widthFactor: 0.9, child: Divider()),
-                  ),
+                  const FractionallySizedBox(
+                      widthFactor: 0.9, child: Divider()),
                   // * Add Trips
                   const AddTripsWidget(),
                 ],
@@ -95,45 +95,138 @@ class AddTripsWidget extends StatefulWidget {
 class _AddTripsWidgetState extends State<AddTripsWidget> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(children: [
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(
-            'Where have you visited?',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
+    List<String>? traveledPlaces = [];
+    return Column(children: [
+      const Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          'Where have you visited?',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
           ),
         ),
-        FractionallySizedBox(
-          widthFactor: 0.9,
-          child: BlocBuilder<LocationBloc, LocationState>(
-            builder: ((context, state) {
-              if (state is LocationSearchbarFocused ||
-                  state is LocationSearchStarted) {
-                return AnimatedContainer(
+      ),
+      FractionallySizedBox(
+        widthFactor: 0.9,
+        child: BlocBuilder<LocationBloc, LocationState>(
+          builder: ((context, state) {
+            if (state is LocationSearchbarFocused ||
+                state is LocationSearchStarted) {
+              return Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: AnimatedContainer(
                   duration: const Duration(milliseconds: 100),
                   height: 400,
-                  child: LocationSearchBar(
-                    hintText: 'Search Cities...',
+                  child: RegionAndCitySearchBar(
+                    hintText: 'Search Regions & Cities...',
                   ),
-                );
-              } else {
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 100),
-                  height: 78,
-                  child: LocationSearchBar(
-                    hintText: 'Search Cities...',
+                ),
+              );
+            } else {
+              return Column(
+                children: [
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 100),
+                    height: 78,
+                    child: RegionAndCitySearchBar(
+                      hintText: 'Search Regions & Cities...',
+                    ),
                   ),
-                );
-              }
-            }),
-          ),
+                  BlocProvider.value(
+                    value: context.read<OnboardingBloc>(),
+                    child: SizedBox(
+                      child: BlocBuilder<OnboardingBloc, OnboardingState>(
+                        builder: (context, state) {
+                          if (state is OnboardingLoading) {
+                            return const CircularProgressIndicator();
+                          }
+                          if (state is OnboardingLoaded) {
+                            return StreamBuilder<Place>(
+                              stream: context
+                                  .read<LocationBloc>()
+                                  .selectedLocation
+                                  .stream,
+                              builder: ((context, snapshot) {
+                                var user =
+                                    context.read<SignupCubit>().state.user!;
+                                if (snapshot.hasData) {
+                                  var searchedLocation = snapshot.data as Place;
+                                  if (traveledPlaces
+                                          .contains(searchedLocation.name) !=
+                                      true) {
+                                    traveledPlaces.add(searchedLocation.name);
+                                    context.read<OnboardingBloc>().add(
+                                        UpdateUser(
+                                            user: state.user.copyWith(
+                                                visitedPlaces:
+                                                    traveledPlaces)));
+                                  }
+                                  // * Show searched places as chips.
+                                  if (traveledPlaces.isNotEmpty) {
+                                    return Wrap(
+                                      spacing: 10,
+                                      children: traveledPlaces
+                                          .map(
+                                            (place) => Chip(
+                                              onDeleted: () {
+                                                // * Remove place from local array
+                                                setState(() {
+                                                  traveledPlaces.removeWhere(
+                                                      (element) =>
+                                                          element == place);
+
+                                                  if (traveledPlaces.length ==
+                                                      1) {
+                                                    traveledPlaces.clear();
+
+                                                    // * Update firestore user object
+                                                    context
+                                                        .read<OnboardingBloc>()
+                                                        .add(UpdateUser(
+                                                            user: state.user
+                                                                .copyWith(
+                                                                    visitedPlaces:
+                                                                        null)));
+                                                  } else {
+                                                    // * Update firestore user object
+                                                    context
+                                                        .read<OnboardingBloc>()
+                                                        .add(UpdateUser(
+                                                            user: state.user.copyWith(
+                                                                visitedPlaces:
+                                                                    traveledPlaces)));
+                                                  }
+                                                });
+                                              },
+                                              deleteIcon:
+                                                  const Icon(Icons.close),
+                                              label: Text(
+                                                place,
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
+                                    );
+                                  }
+                                }
+                                return const Text('Something Went Wrong..');
+                              }),
+                            );
+                          }
+                          return Container();
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }
+          }),
         ),
-      ]),
-    );
+      ),
+    ]);
   }
 }
 
@@ -168,7 +261,7 @@ class MySpecialties extends StatefulWidget {
 }
 
 class _MySpecialtiesState extends State<MySpecialties> {
-  static List<String> selectedSpecialties = [];
+  List<String> selectedSpecialties = [];
 
   @override
   Widget build(BuildContext context) {
@@ -233,47 +326,38 @@ class _MySpecialtiesState extends State<MySpecialties> {
       borderRadius: BorderRadius.circular(25),
       child: Container(
         // color: const Color(0xffBFD5DF),
-        child: Container(
-          //color: Colors.black,
-          //    transformAlignment: Alignment.center,
+        child: Align(
           alignment: Alignment.center,
-          width: 400,
-          height: 250,
-          decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20))),
-          child: Align(
-            alignment: Alignment.center,
-            child: Column(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    'What are your specialties?',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  'What are your specialties?',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: 15,
-                    direction: Axis.horizontal,
-                    children: specialtySample
-                        .map((i) => SpecialtyChip(
-                            specialtiesList: selectedSpecialties,
-                            label: i.name,
-                            color: i.color,
-                            avatar: i.icon,
-                            selected: i.selected,
-                            onSelected: i.onSelected))
-                        .toList(),
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 15,
+                  direction: Axis.horizontal,
+                  children: specialtySample
+                      .map((i) => SpecialtyChip(
+                          specialtiesList: selectedSpecialties,
+                          label: i.name,
+                          color: i.color,
+                          avatar: i.icon,
+                          selected: i.selected,
+                          onSelected: i.onSelected))
+                      .toList(),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

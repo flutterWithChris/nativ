@@ -2,55 +2,83 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nativ/bloc/app/app_bloc.dart';
+import 'package:nativ/bloc/profile/profile_bloc.dart';
 
-class ProfileMenu extends StatelessWidget {
+class ProfileMenu extends StatefulWidget {
   const ProfileMenu({Key? key}) : super(key: key);
 
   static Page page() => const MaterialPage<void>(child: ProfileMenu());
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView(
-        children: [
-          // * Header Image
-          AspectRatio(
-            aspectRatio: 1.91 / 1,
-            child: Image.network(
-              'https://static.euronews.com/articles/stories/06/25/84/50/1200x675_cmsv2_f71b6679-918e-5672-8b87-8f3e17af759e-6258450.jpg',
-              fit: BoxFit.cover,
-            ),
-          ),
+  State<ProfileMenu> createState() => _ProfileMenuState();
+}
 
-          // * Main Content
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 14.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Stack(
-                  alignment: AlignmentDirectional.topEnd,
-                  children: const [
-                    MainProfileInfo(),
-                    Padding(
-                      padding: EdgeInsets.only(right: 20),
-                      child: ProfileIcon(),
+class _ProfileMenuState extends State<ProfileMenu> {
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider.value(
+      value: context.read<ProfileBloc>(),
+      child: Scaffold(
+        body: BlocBuilder<ProfileBloc, ProfileState>(
+          builder: (context, state) {
+            if (state is ProfileLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (state is ProfileLoaded) {
+              return ListView(
+                shrinkWrap: true,
+                children: [
+                  // * Header Image
+                  AspectRatio(
+                    aspectRatio: 1.91 / 1,
+                    child: Image.network(
+                      'https://static.euronews.com/articles/stories/06/25/84/50/1200x675_cmsv2_f71b6679-918e-5672-8b87-8f3e17af759e-6258450.jpg',
+                      fit: BoxFit.cover,
                     ),
-                  ],
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 20, bottom: 20),
-                  child: PublicReviews(),
-                ),
-                const Padding(
-                  padding: EdgeInsets.all(24.0),
-                  child: MySpecialties(),
-                )
-              ],
-            ),
-          ),
-        ],
+                  ),
+
+                  // * Main Content
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0, vertical: 14.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Stack(
+                          alignment: AlignmentDirectional.topEnd,
+                          children: [
+                            MainProfileInfo(
+                                name: state.user.name!,
+                                location: state.user.location!,
+                                bio: state.user.bio!),
+                            const Padding(
+                              padding: EdgeInsets.only(right: 18),
+                              child: ProfileIcon(),
+                            ),
+                          ],
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 20, bottom: 20),
+                          child: PublicReviews(),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.all(24.0),
+                          child: MySpecialties(),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return const Center(
+                child: Text('Something Went Wrong...'),
+              );
+            }
+          },
+        ),
       ),
     );
   }
@@ -158,7 +186,6 @@ class SpecialtyIcon extends StatelessWidget {
           Icon(
             icon,
             size: 40,
-            color: Colors.cyan,
           ),
           const SizedBox(
             height: 7,
@@ -201,28 +228,29 @@ class ReviewCarousel extends StatelessWidget {
 }
 
 class MainProfileInfo extends StatelessWidget {
+  final String name, bio, location;
   const MainProfileInfo({
+    required this.name,
+    required this.bio,
+    required this.location,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final user = context.select((AppBloc bloc) => bloc.state.user);
-
     return ListTile(
       visualDensity: VisualDensity.comfortable,
       //leading: ProfileIcon(),
       title: Wrap(
         crossAxisAlignment: WrapCrossAlignment.center,
         spacing: 14,
-        children: const [
+        children: [
           Text(
-            'Thorin Oakenshield',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            name,
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
-          Icon(
-            FontAwesomeIcons.circleCheck,
-            color: Colors.white,
+          const Icon(
+            Icons.check_circle_rounded,
             size: 20,
           )
         ],
@@ -236,14 +264,13 @@ class MainProfileInfo extends StatelessWidget {
               children: [
                 Wrap(
                   crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 10,
-                  children: const [
-                    Icon(
+                  spacing: 14,
+                  children: [
+                    const Icon(
                       FontAwesomeIcons.mapLocation,
-                      color: Colors.white,
                       size: 15,
                     ),
-                    Text('Auckland, NZ'),
+                    Text(location),
                   ],
                 ),
                 const SizedBox(
@@ -264,8 +291,8 @@ class MainProfileInfo extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
-          const Text(
-            'I’m a born & raised New Zealander who loves hiking & finding the best food.',
+          Text(
+            bio,
           ),
           Center(
             child: Padding(
@@ -276,7 +303,7 @@ class MainProfileInfo extends StatelessWidget {
                   },
                   style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
                       fixedSize:
-                          MaterialStateProperty.all(const Size(325, 42))),
+                          MaterialStateProperty.all(const Size(360, 42))),
                   child: Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     spacing: 5,
@@ -296,7 +323,6 @@ class MainProfileInfo extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ActionChip(
-                backgroundColor: const Color(0xff93A3AB),
                 label: const Text(
                   'Message Me',
                   style: TextStyle(
@@ -313,15 +339,12 @@ class MainProfileInfo extends StatelessWidget {
                 child: Wrap(spacing: 20, children: const [
                   Icon(
                     FontAwesomeIcons.instagram,
-                    color: Colors.white,
                   ),
                   Icon(
                     FontAwesomeIcons.facebook,
-                    color: Colors.white,
                   ),
                   Icon(
                     FontAwesomeIcons.twitter,
-                    color: Colors.white,
                   ),
                 ]),
               ),

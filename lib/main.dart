@@ -10,6 +10,7 @@ import 'package:nativ/bloc/bottom_nav_bar/bottom_nav_bar_cubit.dart';
 import 'package:nativ/bloc/geolocation/bloc/geolocation_bloc.dart';
 import 'package:nativ/bloc/location/location_bloc.dart';
 import 'package:nativ/bloc/onboarding/onboarding_bloc.dart';
+import 'package:nativ/bloc/profile/profile_bloc.dart';
 import 'package:nativ/bloc/settings/preferences.dart';
 import 'package:nativ/bloc/settings/theme/bloc/theme_bloc.dart';
 import 'package:nativ/bloc/signup/signup_cubit.dart';
@@ -49,8 +50,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider.value(
-        value: _authRepository,
+    return MultiRepositoryProvider(
+        providers: [
+          RepositoryProvider.value(
+            value: _authRepository,
+          ),
+        ],
         child: MultiBlocProvider(
           providers: [
             BlocProvider<AppBloc>(
@@ -75,6 +80,12 @@ class AppView extends StatelessWidget {
         RepositoryProvider(
           create: (context) => GeoLocationRepository(),
         ),
+        RepositoryProvider(
+          create: (context) => StorageRepository(),
+        ),
+        RepositoryProvider(
+          create: (context) => DatabaseRepository(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -97,8 +108,17 @@ class AppView extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => OnboardingBloc(
-                storageRepository: StorageRepository(),
-                databaseRepository: DatabaseRepository()),
+              storageRepository: context.read<StorageRepository>(),
+              databaseRepository: context.read<DatabaseRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => ProfileBloc(
+              appBloc: context.read<AppBloc>(),
+              databaseRepository: context.read<DatabaseRepository>(),
+            )..add(
+                LoadProfile(userId: context.read<AppBloc>().state.user.id!),
+              ),
           ),
         ],
         child: BlocBuilder<ThemeBloc, ThemeState>(
@@ -146,14 +166,15 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 50),
               child: Column(
-                children: const <Widget>[
-                  ThemeSwitcher(),
+                children: <Widget>[
                   DrawerHeader(
                     child: Text(
-                      'Name',
-                      style: TextStyle(color: Colors.black87, fontSize: 20),
+                      user.name!,
+                      style:
+                          const TextStyle(color: Colors.black87, fontSize: 20),
                     ),
                   ),
+                  const LogoutButton(),
                 ],
               ),
             ),
@@ -210,6 +231,25 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+class LogoutButton extends StatelessWidget {
+  const LogoutButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+        onPressed: () {
+          context.read<AppBloc>().add(AppLogoutRequest());
+        },
+        child: Wrap(
+          spacing: 10,
+          children: const [
+            Text('Logout'),
+            Icon(Icons.logout_rounded),
+          ],
+        ));
+  }
+}
+
 class MainAppBar extends StatefulWidget {
   const MainAppBar({
     Key? key,
@@ -230,7 +270,10 @@ class _MainAppBarState extends State<MainAppBar> {
                 Padding(
                   padding: EdgeInsets.only(right: 24.0),
                   child: SizedBox(
-                      width: 80, child: FittedBox(child: ThemeSwitcher())),
+                      width: 75,
+                      child: FittedBox(
+                          child:
+                              Opacity(opacity: 0.8, child: ThemeSwitcher()))),
                 ),
               ],
               title: PopupMenuButton(
@@ -254,21 +297,13 @@ class _MainAppBarState extends State<MainAppBar> {
               );
         }
         return AppBar(
-          actions: [
-            TextButton(
-              onPressed: () => context.read<AppBloc>().add(AppLogoutRequest()),
-              child: Wrap(
-                spacing: 10,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: const [
-                  Text(
-                    'Logout',
-                  ),
-                  Icon(
-                    Icons.logout_rounded,
-                  ),
-                ],
-              ),
+          actions: const [
+            Padding(
+              padding: EdgeInsets.only(right: 24.0),
+              child: SizedBox(
+                  width: 75,
+                  child: FittedBox(
+                      child: Opacity(opacity: 0.8, child: ThemeSwitcher()))),
             ),
           ],
           title: const Text(

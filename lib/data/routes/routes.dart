@@ -10,6 +10,7 @@ List<Page> onGenerateAppViewPages(
   switch (state) {
     case AppStatus.authenticated:
       return [HomeScreen.page()];
+
     case AppStatus.unauthenticated:
       return [LoginScreen.page()];
   }

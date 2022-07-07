@@ -93,12 +93,11 @@ class LoginForm extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 2),
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    GoogleLoginButton(
-                                        googleClientId: googleClientId),
-                                    const SignupButton(),
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: const [
+                                    /* GoogleLoginButton(
+                                        googleClientId: googleClientId),*/
+                                    SignupButton(),
                                   ],
                                 ),
                               ),
@@ -112,16 +111,40 @@ class LoginForm extends StatelessWidget {
                               Align(
                                 alignment: Alignment.centerLeft,
                                 child: TextButton(
-                                    onPressed: () {},
-                                    child: const Text(
-                                      'Forgot Password?',
-                                      textAlign: TextAlign.end,
-                                    )),
+                                  onPressed: () {},
+                                  child: const Text(
+                                    'Forgot Password?',
+                                    textAlign: TextAlign.end,
+                                  ),
+                                ),
                               ),
                             ],
                           ),
                         ),
                         _loginButton(),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8),
+                          child: Text(
+                            'Or',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Opacity(
+                          opacity: 0.85,
+                          child: Wrap(
+                            spacing: 16,
+                            children: [
+                              GoogleLoginButton(
+                                  googleClientId:
+                                      dotenv.get('GOOGLE_SERVICE_CLIENT_ID')),
+                              const GoogleSignInIconButton(
+                                  clientId: 'clientId'),
+                              const FacebookSignInIconButton(
+                                  clientId: 'clientId'),
+                              const AppleSignInIconButton()
+                            ],
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -142,7 +165,7 @@ class LoginForm extends StatelessWidget {
             ? const CircularProgressIndicator()
             : ElevatedButton(
                 style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
-                    fixedSize: MaterialStateProperty.all(const Size(220, 42))),
+                    fixedSize: MaterialStateProperty.all(const Size(200, 42))),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     context.read<LoginCubit>().logInWithCredentials();
@@ -151,7 +174,7 @@ class LoginForm extends StatelessWidget {
                   }
                 },
                 child: const Text(
-                  'Sign In',
+                  'Login',
                   style: TextStyle(color: Colors.white),
                 ),
               );

@@ -32,7 +32,7 @@ class _MainMapState extends State<MainMap> {
     final LocationBloc locationBloc = BlocProvider.of<LocationBloc>(context);
     super.initState();
     locationSubscription = locationBloc.selectedLocation.stream.listen((place) {
-      _goToPlace(place, mapController);
+      //_goToPlace(place, mapController);
     });
   }
 
@@ -66,8 +66,8 @@ class _MainMapState extends State<MainMap> {
                         screenSize: Size(MediaQuery.of(context).size.width,
                             MediaQuery.of(context).size.height),
                         center: currentPosition,
-                        minZoom: 2,
-                        zoom: 11.0,
+                        minZoom: 0,
+                        zoom: 3.0,
                         interactiveFlags:
                             InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                       ),
@@ -164,8 +164,8 @@ class _MainMapState extends State<MainMap> {
                         screenSize: Size(MediaQuery.of(context).size.width,
                             MediaQuery.of(context).size.height),
                         center: currentPosition,
-                        minZoom: 2,
-                        zoom: 11.0,
+                        minZoom: 0,
+                        zoom: 3.0,
                         interactiveFlags:
                             InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                       ),

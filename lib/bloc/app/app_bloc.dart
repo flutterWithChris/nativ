@@ -11,7 +11,7 @@ part 'app_state.dart';
 
 class AppBloc extends Bloc<AppEvent, AppState> {
   final AuthRepository _authRepository;
-  StreamSubscription<User>? _userSubscription;
+  StreamSubscription<User?>? _userSubscription;
 
   AppBloc({required AuthRepository authRepository})
       : _authRepository = authRepository,

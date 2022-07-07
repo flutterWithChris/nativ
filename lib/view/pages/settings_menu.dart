@@ -19,7 +19,6 @@ class SettingsMenu extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: const [
-            ThemeSwitcher(),
             SettingsMenuItem(
               leadingIcon: Icons.person,
               label: 'Account Info',
@@ -81,49 +80,25 @@ class SettingsMenuItem extends StatelessWidget {
     return BlocProvider.value(
       value: context.read<ThemeBloc>(),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          BlocBuilder<ThemeBloc, ThemeState>(
-            buildWhen: (previous, current) =>
-                previous.themeData != current.themeData,
-            builder: (context, state) {
-              if (state.themeData == ThemeData.light()) {
-                return ListTile(
-                  minVerticalPadding: 25,
-                  leading: Icon(
-                    leadingIcon,
-                  ),
-                  title: Text(
-                    label,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium!
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  trailing: Icon(trailingIcon),
-                );
-              } else {
-                return ListTile(
-                  minVerticalPadding: 25,
-                  leading: SizedBox(
-                    height: double.infinity,
-                    child: Icon(
-                      leadingIcon,
-                      color: Colors.white,
-                    ),
-                  ),
-                  title: Text(
-                    label,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium!
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  trailing: SizedBox(
-                      height: double.infinity,
-                      child: (Icon(trailingIcon, color: Colors.white))),
-                );
-              }
-            },
+          ListTile(
+            style: Theme.of(context).listTileTheme.style,
+            minVerticalPadding: 25,
+            leading: SizedBox(
+              height: 42,
+              child: Icon(
+                leadingIcon,
+              ),
+            ),
+            title: Text(
+              label,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium!
+                  .copyWith(fontWeight: FontWeight.bold),
+            ),
+            trailing: SizedBox(height: 42, child: Icon(trailingIcon)),
           ),
           const Divider(),
         ],
