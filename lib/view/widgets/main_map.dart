@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -38,8 +39,8 @@ class _MainMapState extends State<MainMap> {
 
   @override
   Widget build(BuildContext context) {
-    var locationBloc = BlocProvider.of<LocationBloc>(context);
     return BlocBuilder<ThemeBloc, ThemeState>(
+      buildWhen: (previous, current) => previous.themeData != current.themeData,
       builder: (context, state) {
         if (state.themeData == ThemeData.light()) {
           return BlocBuilder<GeolocationBloc, GeolocationState>(

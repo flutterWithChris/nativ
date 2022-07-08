@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:glassmorphism/glassmorphism.dart';
 import 'package:nativ/bloc/profile/profile_bloc.dart';
 import 'package:nativ/view/pages/connect_page.dart';
 
@@ -28,52 +29,63 @@ class _ProfileMenuState extends State<ProfileMenu> {
               );
             }
             if (state is ProfileLoaded) {
-              return ListView(
-                shrinkWrap: true,
+              return Stack(
+                alignment: AlignmentDirectional.center,
                 children: [
-                  // * Header Image
-                  AspectRatio(
-                    aspectRatio: 1.91 / 1,
-                    child: Image.network(
-                      'https://static.euronews.com/articles/stories/06/25/84/50/1200x675_cmsv2_f71b6679-918e-5672-8b87-8f3e17af759e-6258450.jpg',
-                      fit: BoxFit.cover,
-                    ),
+                  Image.asset(
+                    'lib/assets/mapbox-background-dark.png',
+                    fit: BoxFit.cover,
+                    height: MediaQuery.of(context).size.height,
+                    alignment: Alignment.centerRight,
                   ),
+                  ListView(
+                    shrinkWrap: true,
+                    children: [
+                      // * Header Image
+                      AspectRatio(
+                        aspectRatio: 1.91 / 1,
+                        child: Image.network(
+                          'https://static.euronews.com/articles/stories/06/25/84/50/1200x675_cmsv2_f71b6679-918e-5672-8b87-8f3e17af759e-6258450.jpg',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
 
-                  // * Main Content
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12.0, vertical: 14.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Stack(
-                          alignment: AlignmentDirectional.topEnd,
+                      // * Main Content
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12.0, vertical: 14.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            MainProfileInfo(
-                                name: state.user.name!,
-                                location: state.user.location!,
-                                bio: state.user.bio!),
-                            const Padding(
-                              padding: EdgeInsets.only(right: 18),
-                              child: ProfileIcon(),
+                            Stack(
+                              alignment: AlignmentDirectional.topEnd,
+                              children: [
+                                MainProfileInfo(
+                                    name: state.user.name!,
+                                    location: state.user.location!,
+                                    bio: state.user.bio!),
+                                const Padding(
+                                  padding: EdgeInsets.only(right: 18),
+                                  child: ProfileIcon(),
+                                ),
+                              ],
                             ),
+                            const Padding(
+                              padding: EdgeInsets.only(top: 20, bottom: 20),
+                              child: PublicReviews(),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: MySpecialties(),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: MyTrips(),
+                            )
                           ],
                         ),
-                        const Padding(
-                          padding: EdgeInsets.only(top: 20, bottom: 20),
-                          child: PublicReviews(),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.all(24.0),
-                          child: MySpecialties(),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.all(24.0),
-                          child: MyTrips(),
-                        )
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               );
@@ -114,15 +126,34 @@ class MySpecialties extends StatelessWidget {
           return const CircularProgressIndicator();
         }
         if (state is ProfileLoaded) {
-          return Container(
-            //    transformAlignment: Alignment.center,
-            alignment: Alignment.center,
-
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.black54),
-                borderRadius: const BorderRadius.all(Radius.circular(20))),
+          return GlassmorphicContainer(
+            width: 350,
+            height: 125,
+            borderRadius: 20,
+            blur: 3,
+            alignment: Alignment.bottomCenter,
+            border: 1,
+            linearGradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  const Color.fromARGB(255, 62, 154, 234).withOpacity(0.1),
+                  const Color.fromARGB(255, 62, 154, 234).withOpacity(0.05),
+                ],
+                stops: const [
+                  0.1,
+                  1,
+                ]),
+            borderGradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                const Color(0xFFffffff).withOpacity(0.5),
+                const Color((0xFFFFFFFF)).withOpacity(0.5),
+              ],
+            ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
               child: Align(
                 alignment: Alignment.center,
                 child: Column(
@@ -130,16 +161,17 @@ class MySpecialties extends StatelessWidget {
                     const Padding(
                       padding: EdgeInsets.only(bottom: 10),
                       child: Text(
-                        'My Specialties',
+                        'My Specialties:',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18),
                       ),
                     ),
                     Wrap(spacing: 10,
-                        // crossAxisAlignment: WrapCrossAlignment.center,
+                        //crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           Chip(
                             label: Text(state.user.specialties![1]),
+                            backgroundColor: Colors.white54,
                             avatar: const Icon(
                               FontAwesomeIcons.utensils,
                               size: 20,
@@ -147,6 +179,7 @@ class MySpecialties extends StatelessWidget {
                           ),
                           Chip(
                             label: Text(state.user.specialties![2]),
+                            backgroundColor: Colors.white54,
                             avatar: const Icon(
                               FontAwesomeIcons.masksTheater,
                               size: 20,
@@ -180,50 +213,68 @@ class MyTrips extends StatelessWidget {
           return const CircularProgressIndicator();
         }
         if (state is ProfileLoaded) {
-          return Container(
-            color: Colors.black38,
-            child: Container(
-              //    transformAlignment: Alignment.center,
-              alignment: Alignment.center,
-
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black54),
-                  borderRadius: const BorderRadius.all(Radius.circular(20))),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Column(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 10),
-                        child: Text(
-                          'Places I\'ve traveled:',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18),
-                        ),
+          return GlassmorphicContainer(
+            width: 350,
+            height: 175,
+            borderRadius: 20,
+            blur: 3,
+            alignment: Alignment.bottomCenter,
+            border: 1,
+            linearGradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  const Color(0xFFffffff).withOpacity(0.1),
+                  const Color(0xFFFFFFFF).withOpacity(0.05),
+                ],
+                stops: const [
+                  0.1,
+                  1,
+                ]),
+            borderGradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                const Color(0xFFffffff).withOpacity(0.5),
+                const Color((0xFFFFFFFF)).withOpacity(0.5),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+              child: Align(
+                alignment: Alignment.center,
+                child: Column(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 10),
+                      child: Text(
+                        'Places I\'ve traveled:',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
                       ),
-                      Wrap(spacing: 10,
-                          //crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            Chip(
-                              label: Text(state.user.visitedPlaces![0]),
-                              avatar: const Icon(
-                                FontAwesomeIcons.earthAmericas,
-                                size: 20,
-                              ),
+                    ),
+                    Wrap(
+                        spacing: 10,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Chip(
+                            backgroundColor: Colors.white54,
+                            label: Text(state.user.visitedPlaces![0]),
+                            avatar: const Icon(
+                              FontAwesomeIcons.earthAmericas,
+                              size: 20,
                             ),
-                            Chip(
-                              label: Text(state.user.visitedPlaces![1]),
-                              avatar: const Icon(
-                                FontAwesomeIcons.earthEurope,
-                                size: 20,
-                              ),
+                          ),
+                          Chip(
+                            backgroundColor: Colors.white54,
+                            label: Text(state.user.visitedPlaces![1]),
+                            avatar: const Icon(
+                              FontAwesomeIcons.earthEurope,
+                              size: 20,
                             ),
-                          ]),
-                    ],
-                  ),
+                          ),
+                        ]),
+                  ],
                 ),
               ),
             ),

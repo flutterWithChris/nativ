@@ -194,7 +194,6 @@ class _HomeScreenState extends State<HomeScreen> {
               if (state.bottomNavBarItem == BottomNavBarItem.home) {
                 return Stack(
                   children: [
-                    const MainMap(),
                     BlocBuilder<LocationBloc, LocationState>(
                       builder: (context, state) {
                         if (state is LocationLoading) {

@@ -26,8 +26,7 @@ final appThemeData = {
     // bottomAppBarColor: Colors.white,
     colorSchemeSeed: const Color(0xffBFD5DF),
     useMaterial3: true,
-    listTileTheme: const ListTileThemeData(
-        iconColor: Colors.white, textColor: Colors.white),
+    listTileTheme: const ListTileThemeData(),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         primary: const Color(0xff6E8691),
@@ -67,8 +66,9 @@ final appThemeData = {
     ),
     textTheme: GoogleFonts.lektonTextTheme()
         .apply(bodyColor: Colors.white, displayColor: Colors.white),
+    canvasColor: Colors.transparent,
     chipTheme: const ChipThemeData(
-      backgroundColor: Color(0xff93A3AB),
+      backgroundColor: Colors.transparent,
     ),
     cardTheme: const CardTheme(
       color: Color(0xff93A3AB),
