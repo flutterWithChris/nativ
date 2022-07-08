@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:nativ/bloc/app/app_bloc.dart';
+import 'package:get/get.dart';
 import 'package:nativ/bloc/profile/profile_bloc.dart';
+import 'package:nativ/view/pages/connect_page.dart';
 
 class ProfileMenu extends StatefulWidget {
   const ProfileMenu({Key? key}) : super(key: key);
@@ -66,6 +67,10 @@ class _ProfileMenuState extends State<ProfileMenu> {
                         const Padding(
                           padding: EdgeInsets.all(24.0),
                           child: MySpecialties(),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.all(24.0),
+                          child: MyTrips(),
                         )
                       ],
                     ),
@@ -91,17 +96,8 @@ class PublicReviews extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: const [
-      Icon(
-        FontAwesomeIcons.chevronLeft,
-        color: Colors.black38,
-      ),
-      FractionallySizedBox(widthFactor: 0.80, child: ReviewCarousel()),
-      Icon(
-        FontAwesomeIcons.chevronRight,
-        color: Colors.black38,
-      ),
-    ]);
+    return const FractionallySizedBox(
+        widthFactor: 0.90, child: ReviewCarousel());
   }
 }
 
@@ -112,56 +108,131 @@ class MySpecialties extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      //    transformAlignment: Alignment.center,
-      alignment: Alignment.center,
-      width: 400,
-      height: 275,
-      decoration: BoxDecoration(
-          border: Border.all(color: Colors.black54),
-          borderRadius: const BorderRadius.all(Radius.circular(20))),
-      child: Align(
-        alignment: Alignment.center,
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(12.0),
-              child: Text(
-                'My Specialties',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+    return BlocBuilder<ProfileBloc, ProfileState>(
+      builder: (context, state) {
+        if (state is ProfileLoading) {
+          return const CircularProgressIndicator();
+        }
+        if (state is ProfileLoaded) {
+          return Container(
+            //    transformAlignment: Alignment.center,
+            alignment: Alignment.center,
+
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.black54),
+                borderRadius: const BorderRadius.all(Radius.circular(20))),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Align(
+                alignment: Alignment.center,
+                child: Column(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 10),
+                      child: Text(
+                        'My Specialties',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                    ),
+                    Wrap(spacing: 10,
+                        // crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Chip(
+                            label: Text(state.user.specialties![1]),
+                            avatar: const Icon(
+                              FontAwesomeIcons.utensils,
+                              size: 20,
+                            ),
+                          ),
+                          Chip(
+                            label: Text(state.user.specialties![2]),
+                            avatar: const Icon(
+                              FontAwesomeIcons.masksTheater,
+                              size: 20,
+                            ),
+                          ),
+                        ]),
+                  ],
+                ),
               ),
             ),
-            Wrap(spacing: 15,
-                // crossAxisAlignment: WrapCrossAlignment.center,
-                children: const [
-                  SpecialtyIcon(
-                    icon: FontAwesomeIcons.utensils,
-                    label: 'Food',
+          );
+        }
+        return const Center(
+          child: Text('Something Went Wrong...'),
+        );
+      },
+    );
+  }
+}
+
+class MyTrips extends StatelessWidget {
+  const MyTrips({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ProfileBloc, ProfileState>(
+      builder: (context, state) {
+        if (state is ProfileLoading) {
+          return const CircularProgressIndicator();
+        }
+        if (state is ProfileLoaded) {
+          return Container(
+            color: Colors.black38,
+            child: Container(
+              //    transformAlignment: Alignment.center,
+              alignment: Alignment.center,
+
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black54),
+                  borderRadius: const BorderRadius.all(Radius.circular(20))),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Column(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 10),
+                        child: Text(
+                          'Places I\'ve traveled:',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
+                      ),
+                      Wrap(spacing: 10,
+                          //crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Chip(
+                              label: Text(state.user.visitedPlaces![0]),
+                              avatar: const Icon(
+                                FontAwesomeIcons.earthAmericas,
+                                size: 20,
+                              ),
+                            ),
+                            Chip(
+                              label: Text(state.user.visitedPlaces![1]),
+                              avatar: const Icon(
+                                FontAwesomeIcons.earthEurope,
+                                size: 20,
+                              ),
+                            ),
+                          ]),
+                    ],
                   ),
-                  SpecialtyIcon(
-                    icon: FontAwesomeIcons.trainTram,
-                    label: 'Public Transport',
-                  ),
-                  SpecialtyIcon(
-                    icon: FontAwesomeIcons.ticket,
-                    label: 'Entertainment',
-                  ),
-                  SpecialtyIcon(
-                    icon: FontAwesomeIcons.camera,
-                    label: 'Photo Ops',
-                  ),
-                  SpecialtyIcon(
-                    icon: FontAwesomeIcons.basketShopping,
-                    label: 'Shopping',
-                  ),
-                  SpecialtyIcon(
-                    icon: FontAwesomeIcons.route,
-                    label: 'Navigation',
-                  ),
-                ]),
-          ],
-        ),
-      ),
+                ),
+              ),
+            ),
+          );
+        }
+        return const Center(
+          child: Text('Something Went Wrong...'),
+        );
+      },
     );
   }
 }
@@ -299,7 +370,7 @@ class MainProfileInfo extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 12.0),
               child: ElevatedButton(
                   onPressed: () {
-                    print('pressed');
+                    Get.to(() => const ConnectPage());
                   },
                   style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
                       fixedSize:

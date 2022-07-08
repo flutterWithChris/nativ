@@ -89,16 +89,13 @@ class LoginForm extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 50),
                           child: Column(
                             children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 2),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: const [
-                                    /* GoogleLoginButton(
-                                        googleClientId: googleClientId),*/
-                                    SignupButton(),
-                                  ],
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 2),
+                                child: SizedBox(
+                                  width: 325,
+                                  child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: SignupButton()),
                                 ),
                               ),
                               _EmailInput(
@@ -108,20 +105,27 @@ class LoginForm extends StatelessWidget {
                                 height: 15,
                               ),
                               _PasswordInput(controller: passwordController),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: TextButton(
-                                  onPressed: () {},
-                                  child: const Text(
-                                    'Forgot Password?',
-                                    textAlign: TextAlign.end,
+                              SizedBox(
+                                height: 35,
+                                width: 325,
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: TextButton(
+                                    onPressed: () {},
+                                    child: const Text(
+                                      'Forgot Password?',
+                                      textAlign: TextAlign.end,
+                                    ),
                                   ),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        _loginButton(),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5.0),
+                          child: _loginButton(),
+                        ),
                         const Padding(
                           padding: EdgeInsets.symmetric(vertical: 8),
                           child: Text(
@@ -137,11 +141,6 @@ class LoginForm extends StatelessWidget {
                               GoogleLoginButton(
                                   googleClientId:
                                       dotenv.get('GOOGLE_SERVICE_CLIENT_ID')),
-                              const GoogleSignInIconButton(
-                                  clientId: 'clientId'),
-                              const FacebookSignInIconButton(
-                                  clientId: 'clientId'),
-                              const AppleSignInIconButton()
                             ],
                           ),
                         )

@@ -26,7 +26,8 @@ final appThemeData = {
     // bottomAppBarColor: Colors.white,
     colorSchemeSeed: const Color(0xffBFD5DF),
     useMaterial3: true,
-
+    listTileTheme: const ListTileThemeData(
+        iconColor: Colors.white, textColor: Colors.white),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         primary: const Color(0xff6E8691),
