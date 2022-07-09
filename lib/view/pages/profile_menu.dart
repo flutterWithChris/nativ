@@ -130,7 +130,7 @@ class MySpecialties extends StatelessWidget {
             width: 350,
             height: 125,
             borderRadius: 20,
-            blur: 3,
+            blur: 5,
             alignment: Alignment.bottomCenter,
             border: 1,
             linearGradient: LinearGradient(
@@ -168,19 +168,19 @@ class MySpecialties extends StatelessWidget {
                     ),
                     Wrap(spacing: 10,
                         //crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
+                        children: const [
                           Chip(
-                            label: Text(state.user.specialties![1]),
+                            label: Text('test'),
                             backgroundColor: Colors.white54,
-                            avatar: const Icon(
+                            avatar: Icon(
                               FontAwesomeIcons.utensils,
                               size: 20,
                             ),
                           ),
                           Chip(
-                            label: Text(state.user.specialties![2]),
+                            label: Text('test'),
                             backgroundColor: Colors.white54,
-                            avatar: const Icon(
+                            avatar: Icon(
                               FontAwesomeIcons.masksTheater,
                               size: 20,
                             ),
@@ -224,8 +224,8 @@ class MyTrips extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  const Color(0xFFffffff).withOpacity(0.1),
-                  const Color(0xFFFFFFFF).withOpacity(0.05),
+                  const Color.fromARGB(255, 62, 154, 234).withOpacity(0.1),
+                  const Color.fromARGB(255, 62, 154, 234).withOpacity(0.05),
                 ],
                 stops: const [
                   0.1,
@@ -256,19 +256,19 @@ class MyTrips extends StatelessWidget {
                     Wrap(
                         spacing: 10,
                         crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
+                        children: const [
                           Chip(
                             backgroundColor: Colors.white54,
-                            label: Text(state.user.visitedPlaces![0]),
-                            avatar: const Icon(
+                            label: Text('test'),
+                            avatar: Icon(
                               FontAwesomeIcons.earthAmericas,
                               size: 20,
                             ),
                           ),
                           Chip(
                             backgroundColor: Colors.white54,
-                            label: Text(state.user.visitedPlaces![1]),
-                            avatar: const Icon(
+                            label: Text('test'),
+                            avatar: Icon(
                               FontAwesomeIcons.earthEurope,
                               size: 20,
                             ),
@@ -445,15 +445,13 @@ class MainProfileInfo extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ActionChip(
+                backgroundColor: Colors.white60,
                 label: const Text(
                   'Message Me',
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
                 ),
                 onPressed: () {},
                 avatar: const Icon(
                   FontAwesomeIcons.paperPlane,
-                  color: Colors.white,
                   size: 20,
                 ),
               ),

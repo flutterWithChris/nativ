@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:nativ/bloc/profile/profile_bloc.dart';
 import 'package:nativ/main.dart';
 import 'package:nativ/view/screens/chat_screen.dart';
 
@@ -53,7 +55,14 @@ class ConnectPage extends StatelessWidget {
                             fixedSize:
                                 MaterialStateProperty.all(const Size(360, 60))),
                     onPressed: () {
-                      Get.to(() => const ChatScreen());
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => BlocProvider.value(
+                            value: BlocProvider.of<ProfileBloc>(context),
+                            child: const ChatScreen(),
+                          ),
+                        ),
+                      );
                     },
                     child: const ListTile(
                       //  style: Theme.of(context).listTileTheme.style,

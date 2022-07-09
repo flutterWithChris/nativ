@@ -26,6 +26,7 @@ import 'package:nativ/view/widgets/bottom_nav_bar.dart';
 import 'package:nativ/view/widgets/location_searchbar.dart';
 import 'package:nativ/view/widgets/main_map.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
   await dotenv.load();
@@ -36,7 +37,8 @@ void main() async {
   ErrorWidget.builder = (FlutterErrorDetails details) {
     return const Material();
   };
-  runApp(MyApp(authRepository: authRepository));
+  initializeDateFormatting()
+      .then((_) => runApp(MyApp(authRepository: authRepository)));
 }
 
 class MyApp extends StatelessWidget {
