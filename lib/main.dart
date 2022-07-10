@@ -20,7 +20,8 @@ import 'package:nativ/data/repositories/geolocation/geolocation_repository.dart'
 import 'package:nativ/data/repositories/storage/storage_repository.dart';
 import 'package:nativ/data/routes/routes.dart';
 import 'package:nativ/firebase_options.dart';
-import 'package:nativ/view/pages/profile_menu.dart';
+import 'package:nativ/view/pages/profile/profile_menu.dart';
+
 import 'package:nativ/view/pages/settings_menu.dart';
 import 'package:nativ/view/widgets/bottom_nav_bar.dart';
 import 'package:nativ/view/widgets/location_searchbar.dart';
@@ -265,38 +266,6 @@ class _MainAppBarState extends State<MainAppBar> {
   Widget build(BuildContext context) {
     return BlocBuilder<BottomNavBarCubit, BottomNavBarState>(
       builder: (context, state) {
-        if (state.bottomNavBarItem == BottomNavBarItem.profile) {
-          return AppBar(
-              actions: const [
-                Padding(
-                  padding: EdgeInsets.only(right: 24.0),
-                  child: SizedBox(
-                      width: 75,
-                      child: FittedBox(
-                          child:
-                              Opacity(opacity: 0.8, child: ThemeSwitcher()))),
-                ),
-              ],
-              title: PopupMenuButton(
-                position: PopupMenuPosition.under,
-                child: Wrap(
-                  spacing: 5,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: const [
-                    Text('thor_oak'),
-                    Icon(Icons.keyboard_arrow_down),
-                  ],
-                ),
-                itemBuilder: (context) {
-                  List<PopupMenuItem> menuItems = [
-                    const PopupMenuItem(child: Text("thor_in (traveler)")),
-                  ];
-                  return menuItems;
-                },
-              )
-              //  backgroundColor: Colors.white,
-              );
-        }
         return AppBar(
           actions: const [
             Padding(

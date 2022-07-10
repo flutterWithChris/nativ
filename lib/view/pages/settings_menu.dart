@@ -83,7 +83,6 @@ class SettingsMenuItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ListTile(
-            style: Theme.of(context).listTileTheme.style,
             minVerticalPadding: 25,
             leading: SizedBox(
               height: 42,

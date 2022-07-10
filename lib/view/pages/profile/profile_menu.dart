@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:glassmorphism/glassmorphism.dart';
 import 'package:nativ/bloc/profile/profile_bloc.dart';
-import 'package:nativ/view/pages/connect_page.dart';
+import 'package:nativ/bloc/settings/preferences.dart';
+import 'package:nativ/bloc/settings/theme/bloc/theme_bloc.dart';
+import 'package:nativ/view/pages/profile/connect_page.dart';
 
 class ProfileMenu extends StatefulWidget {
   const ProfileMenu({Key? key}) : super(key: key);
@@ -16,86 +17,110 @@ class ProfileMenu extends StatefulWidget {
 }
 
 class _ProfileMenuState extends State<ProfileMenu> {
+  var themeIndex;
+
+  getThemeState() async {
+    themeIndex = SharedPrefs().getThemeIndex;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: context.read<ProfileBloc>(),
-      child: Scaffold(
-        body: BlocBuilder<ProfileBloc, ProfileState>(
-          builder: (context, state) {
-            if (state is ProfileLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            if (state is ProfileLoaded) {
-              return Stack(
-                alignment: AlignmentDirectional.center,
-                children: [
-                  Image.asset(
-                    'lib/assets/mapbox-background-dark.png',
-                    fit: BoxFit.cover,
-                    height: MediaQuery.of(context).size.height,
-                    alignment: Alignment.centerRight,
-                  ),
-                  ListView(
-                    shrinkWrap: true,
-                    children: [
-                      // * Header Image
-                      AspectRatio(
-                        aspectRatio: 1.91 / 1,
-                        child: Image.network(
-                          'https://static.euronews.com/articles/stories/06/25/84/50/1200x675_cmsv2_f71b6679-918e-5672-8b87-8f3e17af759e-6258450.jpg',
+      child: BlocBuilder<ProfileBloc, ProfileState>(
+        builder: (context, state) {
+          if (state is ProfileLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (state is ProfileLoaded) {
+            return BlocProvider.value(
+              value: context.read<ThemeBloc>(),
+              child: Scaffold(
+                body: Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: [
+                    /*   BlocBuilder<ThemeBloc, ThemeState>(
+                      buildWhen: (previous, current) =>
+                          previous.themeData != current.themeData,
+                      builder: (context, state) {
+                        getThemeState();
+                       if (themeIndex == 1) {
+                          return Image.asset(
+                            'lib/assets/mapbox-background-dark.png',
+                            fit: BoxFit.cover,
+                            height: MediaQuery.of(context).size.height,
+                            alignment: Alignment.centerRight,
+                          );
+                        }
+                        return Image.asset(
+                          'lib/assets/mapbox-background.png',
                           fit: BoxFit.cover,
+                          height: MediaQuery.of(context).size.height,
+                          alignment: Alignment.centerRight,
+                        );
+                      },
+                    ), */
+                    ListView(
+                      shrinkWrap: true,
+                      children: [
+                        // * Header Image
+                        AspectRatio(
+                          aspectRatio: 1.91 / 1,
+                          child: Image.network(
+                            'https://static.euronews.com/articles/stories/06/25/84/50/1200x675_cmsv2_f71b6679-918e-5672-8b87-8f3e17af759e-6258450.jpg',
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                      ),
 
-                      // * Main Content
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12.0, vertical: 14.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Stack(
-                              alignment: AlignmentDirectional.topEnd,
-                              children: [
-                                MainProfileInfo(
-                                    name: state.user.name!,
-                                    location: state.user.location!,
-                                    bio: state.user.bio!),
-                                const Padding(
-                                  padding: EdgeInsets.only(right: 18),
-                                  child: ProfileIcon(),
-                                ),
-                              ],
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(top: 20, bottom: 20),
-                              child: PublicReviews(),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: MySpecialties(),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: MyTrips(),
-                            )
-                          ],
+                        // * Main Content
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12.0, vertical: 14.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Stack(
+                                alignment: AlignmentDirectional.topEnd,
+                                children: [
+                                  MainProfileInfo(
+                                      name: state.user.name!,
+                                      location: state.user.location!,
+                                      bio: state.user.bio!),
+                                  const Padding(
+                                    padding: EdgeInsets.only(right: 18),
+                                    child: ProfileIcon(),
+                                  ),
+                                ],
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.only(top: 20, bottom: 20),
+                                child: PublicReviews(),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.all(16.0),
+                                child: MySpecialties(),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.all(16.0),
+                                child: MyTrips(),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              );
-            } else {
-              return const Center(
-                child: Text('Something Went Wrong...'),
-              );
-            }
-          },
-        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            return const Center(
+              child: Text('Something Went Wrong...'),
+            );
+          }
+        },
       ),
     );
   }
@@ -126,32 +151,7 @@ class MySpecialties extends StatelessWidget {
           return const CircularProgressIndicator();
         }
         if (state is ProfileLoaded) {
-          return GlassmorphicContainer(
-            width: 350,
-            height: 125,
-            borderRadius: 20,
-            blur: 5,
-            alignment: Alignment.bottomCenter,
-            border: 1,
-            linearGradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  const Color.fromARGB(255, 62, 154, 234).withOpacity(0.1),
-                  const Color.fromARGB(255, 62, 154, 234).withOpacity(0.05),
-                ],
-                stops: const [
-                  0.1,
-                  1,
-                ]),
-            borderGradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                const Color(0xFFffffff).withOpacity(0.5),
-                const Color((0xFFFFFFFF)).withOpacity(0.5),
-              ],
-            ),
+          return Card(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
               child: Align(
@@ -213,32 +213,7 @@ class MyTrips extends StatelessWidget {
           return const CircularProgressIndicator();
         }
         if (state is ProfileLoaded) {
-          return GlassmorphicContainer(
-            width: 350,
-            height: 175,
-            borderRadius: 20,
-            blur: 3,
-            alignment: Alignment.bottomCenter,
-            border: 1,
-            linearGradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  const Color.fromARGB(255, 62, 154, 234).withOpacity(0.1),
-                  const Color.fromARGB(255, 62, 154, 234).withOpacity(0.05),
-                ],
-                stops: const [
-                  0.1,
-                  1,
-                ]),
-            borderGradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                const Color(0xFFffffff).withOpacity(0.5),
-                const Color((0xFFFFFFFF)).withOpacity(0.5),
-              ],
-            ),
+          return Card(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
               child: Align(
@@ -332,7 +307,7 @@ class ReviewCarousel extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Row(children: const [
           CircleAvatar(
-            radius: 30,
+            radius: 25,
             backgroundImage: NetworkImage(
                 'https://bustickets.com/wp-content/uploads/2019/09/solo-travel-backpack-tips.jpg'),
           ),
@@ -373,6 +348,7 @@ class MainProfileInfo extends StatelessWidget {
           ),
           const Icon(
             Icons.check_circle_rounded,
+            color: Colors.lightBlueAccent,
             size: 20,
           )
         ],
@@ -386,11 +362,12 @@ class MainProfileInfo extends StatelessWidget {
               children: [
                 Wrap(
                   crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 14,
+                  spacing: 9,
                   children: [
                     const Icon(
-                      FontAwesomeIcons.mapLocation,
-                      size: 15,
+                      FontAwesomeIcons.mapPin,
+                      size: 14,
+                      color: Color(0xFFA4C2A5),
                     ),
                     Text(location),
                   ],
@@ -399,7 +376,7 @@ class MainProfileInfo extends StatelessWidget {
                   height: 30,
                   child: FittedBox(
                     child: Chip(
-                      backgroundColor: Colors.orange,
+                      backgroundColor: Colors.lightBlue,
                       label: Text(
                         'Top Rated',
                         style: TextStyle(
@@ -428,7 +405,7 @@ class MainProfileInfo extends StatelessWidget {
                           MaterialStateProperty.all(const Size(360, 42))),
                   child: Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
-                    spacing: 5,
+                    spacing: 4,
                     children: const [
                       Text(
                         'Connect ',
@@ -436,6 +413,7 @@ class MainProfileInfo extends StatelessWidget {
                       ),
                       Icon(
                         FontAwesomeIcons.connectdevelop,
+                        size: 22,
                       )
                     ],
                   )),
@@ -444,15 +422,15 @@ class MainProfileInfo extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ActionChip(
-                backgroundColor: Colors.white60,
+              OutlinedButton.icon(
+                style: Theme.of(context).outlinedButtonTheme.style,
                 label: const Text(
                   'Message Me',
                 ),
                 onPressed: () {},
-                avatar: const Icon(
+                icon: const Icon(
                   FontAwesomeIcons.paperPlane,
-                  size: 20,
+                  size: 14,
                 ),
               ),
               SizedBox(
@@ -462,9 +440,11 @@ class MainProfileInfo extends StatelessWidget {
                   ),
                   Icon(
                     FontAwesomeIcons.facebook,
+                    color: Color(0xFF4267B2),
                   ),
                   Icon(
                     FontAwesomeIcons.twitter,
+                    color: Color(0xFF1DA1F2),
                   ),
                 ]),
               ),

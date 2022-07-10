@@ -8,6 +8,7 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nativ/bloc/geolocation/bloc/geolocation_bloc.dart';
 import 'package:nativ/bloc/location/location_bloc.dart';
+import 'package:nativ/bloc/settings/preferences.dart';
 import 'package:nativ/bloc/settings/theme/bloc/theme_bloc.dart';
 import 'package:nativ/data/model/place.dart';
 import 'package:nativ/view/widgets/region_city_searchbar.dart';
@@ -28,6 +29,12 @@ class _MainMapState extends State<MainMap> {
   static Stream<LocationMarkerPosition>? _markerPosition;
   final MapController mapController = MapController();
 
+  var themeIndex;
+
+  getThemeState() async {
+    themeIndex = SharedPrefs().getThemeIndex;
+  }
+
   @override
   void initState() {
     final LocationBloc locationBloc = BlocProvider.of<LocationBloc>(context);
@@ -42,7 +49,8 @@ class _MainMapState extends State<MainMap> {
     return BlocBuilder<ThemeBloc, ThemeState>(
       buildWhen: (previous, current) => previous.themeData != current.themeData,
       builder: (context, state) {
-        if (state.themeData == ThemeData.light()) {
+        getThemeState();
+        if (themeIndex == 0) {
           return BlocBuilder<GeolocationBloc, GeolocationState>(
               builder: (context, state) {
             if (state is GeolocationLoading) {
@@ -58,53 +66,51 @@ class _MainMapState extends State<MainMap> {
               return Stack(
                 alignment: AlignmentDirectional.topCenter,
                 children: [
-                  SafeArea(
-                    child: FlutterMap(
-                      mapController: mapController,
-                      options: MapOptions(
-                        maxBounds: LatLngBounds(
-                            LatLng(-90, -180.0), LatLng(90.0, 180.0)),
-                        screenSize: Size(MediaQuery.of(context).size.width,
-                            MediaQuery.of(context).size.height),
-                        center: currentPosition,
-                        minZoom: 0,
-                        zoom: 3.0,
-                        interactiveFlags:
-                            InteractiveFlag.pinchZoom | InteractiveFlag.drag,
-                      ),
-                      layers: [
-                        TileLayerOptions(
-                          urlTemplate: dotenv.get('MAPBOX_API_URL'),
-                          additionalOptions: {
-                            'accessToken': dotenv.get('MAPBOX_MAGNOLIA'),
-                            'id': 'mapbox.mapbox-streets-v8',
-                          },
-                        ),
-                        MarkerLayerOptions(
-                          markers: [
-                            Marker(
-                              width: 20.0,
-                              height: 20.0,
-                              point: LatLng(state.position.latitude,
-                                  state.position.longitude),
-                              builder: (ctx) => AnimatedScale(
-                                duration: const Duration(milliseconds: 500),
-                                scale: mapController.zoom <= 5 ? 0.5 : 1.0,
-                                child: const FittedBox(
-                                    child: CircleAvatar(
-                                  radius: 60,
-                                  backgroundColor: Colors.white,
-                                  child: CircleAvatar(
-                                    radius: 45,
-                                    backgroundColor: Colors.blue,
-                                  ),
-                                )),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                  FlutterMap(
+                    mapController: mapController,
+                    options: MapOptions(
+                      maxBounds: LatLngBounds(
+                          LatLng(-90, -180.0), LatLng(90.0, 180.0)),
+                      screenSize: Size(MediaQuery.of(context).size.width,
+                          MediaQuery.of(context).size.height),
+                      center: currentPosition,
+                      minZoom: 0,
+                      zoom: 7.0,
+                      interactiveFlags:
+                          InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                     ),
+                    layers: [
+                      TileLayerOptions(
+                        urlTemplate: dotenv.get('MAPBOX_API_URL'),
+                        additionalOptions: {
+                          'accessToken': dotenv.get('MAPBOX_MAGNOLIA'),
+                          'id': 'mapbox.mapbox-streets-v8',
+                        },
+                      ),
+                      MarkerLayerOptions(
+                        markers: [
+                          Marker(
+                            width: 20.0,
+                            height: 20.0,
+                            point: LatLng(state.position.latitude,
+                                state.position.longitude),
+                            builder: (ctx) => AnimatedScale(
+                              duration: const Duration(milliseconds: 500),
+                              scale: mapController.zoom <= 5 ? 0.5 : 1.0,
+                              child: const FittedBox(
+                                  child: CircleAvatar(
+                                radius: 60,
+                                backgroundColor: Colors.white,
+                                child: CircleAvatar(
+                                  radius: 45,
+                                  backgroundColor: Colors.blue,
+                                ),
+                              )),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -140,7 +146,9 @@ class _MainMapState extends State<MainMap> {
               );
             }
           });
-        } else {
+        }
+        // * Dark Mode Map
+        else {
           return BlocBuilder<GeolocationBloc, GeolocationState>(
               builder: (context, state) {
             if (state is GeolocationLoading) {
@@ -156,53 +164,51 @@ class _MainMapState extends State<MainMap> {
               return Stack(
                 alignment: AlignmentDirectional.topCenter,
                 children: [
-                  SafeArea(
-                    child: FlutterMap(
-                      mapController: mapController,
-                      options: MapOptions(
-                        maxBounds: LatLngBounds(
-                            LatLng(-90, -180.0), LatLng(90.0, 180.0)),
-                        screenSize: Size(MediaQuery.of(context).size.width,
-                            MediaQuery.of(context).size.height),
-                        center: currentPosition,
-                        minZoom: 0,
-                        zoom: 3.0,
-                        interactiveFlags:
-                            InteractiveFlag.pinchZoom | InteractiveFlag.drag,
-                      ),
-                      layers: [
-                        TileLayerOptions(
-                          urlTemplate: dotenv.get('MAPBOX_API_URL_DARK'),
-                          additionalOptions: {
-                            'accessToken': dotenv.get('MAPBOX_MAGNOLIA'),
-                            'id': 'mapbox.mapbox-streets-v8',
-                          },
-                        ),
-                        MarkerLayerOptions(
-                          markers: [
-                            Marker(
-                              width: 20.0,
-                              height: 20.0,
-                              point: LatLng(state.position.latitude,
-                                  state.position.longitude),
-                              builder: (ctx) => AnimatedScale(
-                                duration: const Duration(milliseconds: 500),
-                                scale: mapController.zoom > 9 ? 1.0 : 0.4,
-                                child: const FittedBox(
-                                    child: CircleAvatar(
-                                  radius: 60,
-                                  backgroundColor: Colors.white,
-                                  child: CircleAvatar(
-                                    radius: 45,
-                                    backgroundColor: Colors.blue,
-                                  ),
-                                )),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                  FlutterMap(
+                    mapController: mapController,
+                    options: MapOptions(
+                      maxBounds: LatLngBounds(
+                          LatLng(-90, -180.0), LatLng(90.0, 180.0)),
+                      screenSize: Size(MediaQuery.of(context).size.width,
+                          MediaQuery.of(context).size.height),
+                      center: currentPosition,
+                      minZoom: 0,
+                      zoom: 8.0,
+                      interactiveFlags:
+                          InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                     ),
+                    layers: [
+                      TileLayerOptions(
+                        urlTemplate: dotenv.get('MAPBOX_API_URL_DARK'),
+                        additionalOptions: {
+                          'accessToken': dotenv.get('MAPBOX_MAGNOLIA'),
+                          'id': 'mapbox.mapbox-streets-v8',
+                        },
+                      ),
+                      MarkerLayerOptions(
+                        markers: [
+                          Marker(
+                            width: 20.0,
+                            height: 20.0,
+                            point: LatLng(state.position.latitude,
+                                state.position.longitude),
+                            builder: (ctx) => AnimatedScale(
+                              duration: const Duration(milliseconds: 500),
+                              scale: mapController.zoom < 9.0 ? 0.4 : 1.0,
+                              child: const FittedBox(
+                                  child: CircleAvatar(
+                                radius: 60,
+                                backgroundColor: Colors.white,
+                                child: CircleAvatar(
+                                  radius: 45,
+                                  backgroundColor: Colors.blue,
+                                ),
+                              )),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(

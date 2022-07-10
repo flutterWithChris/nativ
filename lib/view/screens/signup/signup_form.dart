@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nativ/bloc/onboarding/onboarding_bloc.dart';
 import 'package:nativ/bloc/signup/signup_cubit.dart';
-import 'package:nativ/view/pages/profile_setup.dart';
+import 'package:nativ/view/pages/profile/profile_setup.dart';
 import 'package:nativ/view/screens/signup/basic_info.dart';
 import 'package:nativ/view/screens/signup/set_location.dart';
 import 'package:nativ/view/screens/signup/user_type.dart';

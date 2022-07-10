@@ -15,7 +15,8 @@ import 'package:nativ/data/repositories/auth_repository.dart';
 import 'package:nativ/data/repositories/geolocation/geolocation_repository.dart';
 import 'package:nativ/data/routes/routes.dart';
 import 'package:nativ/firebase_options.dart';
-import 'package:nativ/view/pages/profile_menu.dart';
+import 'package:nativ/view/pages/profile/profile_menu.dart';
+
 import 'package:nativ/view/pages/settings_menu.dart';
 import 'package:nativ/view/screens/splash_screen.dart';
 import 'package:nativ/view/widgets/bottom_nav_bar.dart';

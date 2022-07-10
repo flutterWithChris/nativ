@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nativ/bloc/bottom_nav_bar/bottom_nav_bar_cubit.dart';
+import 'package:nativ/bloc/settings/preferences.dart';
 import 'package:nativ/bloc/settings/theme/bloc/theme_bloc.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -33,7 +34,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     return BlocBuilder<ThemeBloc, ThemeState>(
       buildWhen: (previous, current) => previous.themeData != current.themeData,
       builder: (context, state) {
-        if (state.themeData == ThemeData.light()) {
+        if (SharedPrefs().getThemeIndex == 0) {
           return NavigationBarTheme(
               data: NavigationBarThemeData(
                   labelBehavior:
@@ -45,7 +46,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               child: NavigationBar(
                 animationDuration:
                     const Duration(seconds: 1, milliseconds: 618),
-                backgroundColor: const Color(0xff515A5E).withAlpha(255),
+                backgroundColor: const Color(0xFFD8DAD3),
                 destinations: menuItemList,
                 selectedIndex: widget.index,
                 onDestinationSelected: (index) {

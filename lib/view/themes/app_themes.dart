@@ -9,9 +9,11 @@ enum AppTheme {
 
 final appThemeData = {
   AppTheme.Light: ThemeData(
-    scaffoldBackgroundColor: const Color(0xffF5FCFF),
+    scaffoldBackgroundColor: Colors.white,
     primaryTextTheme: const TextTheme(),
     iconTheme: const IconThemeData(color: Color(0xff6E8691)),
+    appBarTheme: const AppBarTheme(backgroundColor: Color(0xFFF1F2EB)),
+    outlinedButtonTheme: const OutlinedButtonThemeData(style: ButtonStyle()),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: Colors.white70,
@@ -29,18 +31,21 @@ final appThemeData = {
     listTileTheme: const ListTileThemeData(),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        primary: const Color(0xff6E8691),
-        onPrimary: Colors.white,
+        primary: const Color(0xffA4C2A5),
+        onPrimary: Colors.white70,
         textStyle: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            //color: Colors.white,
             fontFamily: GoogleFonts.lekton().fontFamily),
         // fixedSize: const Size(200, 35),
       ),
     ),
   ),
   AppTheme.Dark: ThemeData(
+    outlinedButtonTheme: const OutlinedButtonThemeData(
+        style: ButtonStyle(
+            foregroundColor: MaterialStatePropertyAll(Colors.white))),
     listTileTheme:
         const ListTileThemeData(iconColor: Colors.white, enableFeedback: true),
     iconTheme: const IconThemeData(color: Colors.white),
