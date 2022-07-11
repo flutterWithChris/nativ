@@ -46,7 +46,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               child: NavigationBar(
                 animationDuration:
                     const Duration(seconds: 1, milliseconds: 618),
-                backgroundColor: const Color(0xFFD8DAD3),
+                backgroundColor: const Color(0xFFf3f6f2),
                 destinations: menuItemList,
                 selectedIndex: widget.index,
                 onDestinationSelected: (index) {

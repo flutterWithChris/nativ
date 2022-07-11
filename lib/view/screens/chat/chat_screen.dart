@@ -82,7 +82,7 @@ class _ChatScreenState extends State<ChatScreen> {
             body: Chat(
               theme: DefaultChatTheme(
                   inputTextColor: Colors.black87,
-                  primaryColor: const Color(0xFF7FC4E3),
+                  primaryColor: const Color(0xFFf37d64),
                   //inputMargin: const EdgeInsets.only(bottom: 16),
                   sentMessageLinkTitleTextStyle: Theme.of(context)
                       .textTheme
@@ -90,8 +90,10 @@ class _ChatScreenState extends State<ChatScreen> {
                       .copyWith(fontWeight: FontWeight.bold),
                   sentMessageLinkDescriptionTextStyle:
                       Theme.of(context).textTheme.bodyMedium!,
-                  sentMessageBodyTextStyle:
-                      Theme.of(context).textTheme.bodyMedium!,
+                  sentMessageBodyTextStyle: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(color: Colors.white),
                   inputTextDecoration: InputDecoration(
                       fillColor: Colors.white,
                       filled: true,

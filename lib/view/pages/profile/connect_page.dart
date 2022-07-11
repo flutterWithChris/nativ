@@ -31,24 +31,24 @@ class ConnectPage extends StatelessWidget {
               children: [
                 OutlinedButton(
                     style: Theme.of(context)
-                        .elevatedButtonTheme
+                        .outlinedButtonTheme
                         .style!
                         .copyWith(
                             fixedSize:
                                 MaterialStateProperty.all(const Size(360, 60))),
                     onPressed: () {},
-                    child: const ListTile(
-                      //  style: Theme.of(context).listTileTheme.style,
-                      leading: Icon(Icons.camera),
-                      title: Text(
+                    child: ListTile(
+                      style: Theme.of(context).listTileTheme.style,
+                      leading: const Icon(Icons.camera),
+                      title: const Text(
                         'Video Call',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      trailing: Icon(Icons.chevron_right_rounded),
+                      trailing: const Icon(Icons.chevron_right_rounded),
                     )),
                 OutlinedButton(
                     style: Theme.of(context)
-                        .elevatedButtonTheme
+                        .outlinedButtonTheme
                         .style!
                         .copyWith(
                             fixedSize:
@@ -74,7 +74,7 @@ class ConnectPage extends StatelessWidget {
                     )),
                 OutlinedButton(
                     style: Theme.of(context)
-                        .elevatedButtonTheme
+                        .outlinedButtonTheme
                         .style!
                         .copyWith(
                             fixedSize:
@@ -91,7 +91,7 @@ class ConnectPage extends StatelessWidget {
                     )),
                 OutlinedButton(
                     style: Theme.of(context)
-                        .elevatedButtonTheme
+                        .outlinedButtonTheme
                         .style!
                         .copyWith(
                             fixedSize:

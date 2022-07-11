@@ -20,14 +20,14 @@ class SignupBasicInfoPage extends StatelessWidget {
     return Stack(
       alignment: AlignmentDirectional.center,
       children: [
-        Image.asset(
+        /* Image.asset(
           'lib/assets/mapbox-background.png',
           fit: BoxFit.cover,
           height: MediaQuery.of(context).size.height,
           alignment: Alignment.centerRight,
-        ),
+        ), */
         Padding(
-          padding: const EdgeInsets.only(left: 40, right: 40),
+          padding: const EdgeInsets.symmetric(horizontal: 40),
           child: Center(
             child: SingleChildScrollView(
               child: Column(
@@ -40,11 +40,13 @@ class SignupBasicInfoPage extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       //crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Email Signup',
-                            style: Theme.of(context).textTheme.headlineMedium),
-                        const SizedBox(
-                          height: 15,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 24.0),
+                          child: Text('Email Signup',
+                              style:
+                                  Theme.of(context).textTheme.headlineMedium),
                         ),
+
                         EmailInput(),
                         const SizedBox(
                           height: 5,
@@ -71,19 +73,16 @@ class SignupBasicInfoPage extends StatelessWidget {
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ),
-                            Wrap(
-                              spacing: 10,
-                              children: const [
-                                GoogleSignInIconButton(clientId: 'clientId'),
-                                FacebookSignInIconButton(clientId: 'clientId'),
-                                AppleSignInIconButton(),
-                              ],
-                            ),
                             GoogleSignupButton(
                                 formKey: signupformKey,
-                                pageController: pageController)
+                                pageController: pageController),
                           ],
                         ),
+                        LinearProgressIndicator(
+                          backgroundColor: Colors.grey,
+                          color: Theme.of(context).appBarTheme.backgroundColor,
+                          value: 1,
+                        )
                       ],
                     ),
                   ),
@@ -220,35 +219,46 @@ class _GoogleSignupButtonState extends State<GoogleSignupButton> {
             ? const CircularProgressIndicator()
             : Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15),
-                child: IconButton(
-                  icon: const Icon(FontAwesomeIcons.google),
-                  splashColor: Colors.white,
-                  onPressed: () async {
-                    GoogleProviderConfiguration(
-                      clientId: googleClientId,
-                    );
-                    await context
-                        .read<SignupCubit>()
-                        .signUpWithGoogleCredentials();
+                child: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.blue,
+                  child: IconButton(
+                    iconSize: 20,
+                    icon: Image.network(
+                      'http://pngimg.com/uploads/google/google_PNG19635.png',
+                      errorBuilder: (context, error, stackTrace) => const Icon(
+                        FontAwesomeIcons.google,
+                        color: Colors.black54,
+                      ),
+                    ),
+                    splashColor: Colors.white,
+                    onPressed: () async {
+                      GoogleProviderConfiguration(
+                        clientId: googleClientId,
+                      );
+                      await context
+                          .read<SignupCubit>()
+                          .signUpWithGoogleCredentials();
 
-                    if (!mounted) return;
-                    User user = User(
-                        id: context.read<SignupCubit>().state.user!.uid,
-                        name: '',
-                        location: '',
-                        email: context.read<SignupCubit>().state.user!.email,
-                        username: '',
-                        reviews: const {},
-                        specialties: const [],
-                        types: const [],
-                        bio: '',
-                        photo: '',
-                        visitedPlaces: const []);
+                      if (!mounted) return;
+                      User user = User(
+                          id: context.read<SignupCubit>().state.user!.uid,
+                          name: '',
+                          location: '',
+                          email: context.read<SignupCubit>().state.user!.email,
+                          username: '',
+                          reviews: const {},
+                          specialties: const [],
+                          types: const [],
+                          bio: '',
+                          photo: '',
+                          visitedPlaces: const []);
 
-                    context
-                        .read<OnboardingBloc>()
-                        .add(StartOnboarding(user: user));
-                  },
+                      context
+                          .read<OnboardingBloc>()
+                          .add(StartOnboarding(user: user));
+                    },
+                  ),
                 ),
               );
       },
@@ -305,14 +315,8 @@ class PasswordInput extends StatelessWidget {
           autocorrect: false,
           enableSuggestions: false,
           keyboardType: TextInputType.visiblePassword,
-          decoration: InputDecoration(
-            label: const Text('Create a password'),
-            filled: true,
-            fillColor: Colors.white70,
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(45.0),
-                borderSide:
-                    const BorderSide(width: 0, style: BorderStyle.none)),
+          decoration: const InputDecoration(
+            label: Text('Create a password'),
           ),
         );
       },
@@ -344,15 +348,9 @@ class _EmailInputState extends State<EmailInput> {
             context.read<SignupCubit>().emailChanged(value);
           },
           keyboardType: TextInputType.emailAddress,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             hintText: 'you@example.com',
-            label: const Text('Enter your email'),
-            filled: true,
-            fillColor: Colors.white70,
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(45.0),
-                borderSide:
-                    const BorderSide(width: 0, style: BorderStyle.none)),
+            label: Text('Enter your email'),
           ),
         );
       },

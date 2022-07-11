@@ -62,12 +62,12 @@ class LoginForm extends StatelessWidget {
         child: Stack(
           alignment: AlignmentDirectional.center,
           children: [
-            Image.asset(
+            /* Image.asset(
               'lib/assets/mapbox-background.png',
               fit: BoxFit.cover,
               height: MediaQuery.of(context).size.height,
               alignment: Alignment.centerRight,
-            ),
+            ), */
             BlocBuilder<LoginCubit, LoginState>(
               builder: (context, state) {
                 return Container(
@@ -267,6 +267,7 @@ class _EmailInput extends StatelessWidget {
         buildWhen: (previous, current) => previous.email != current.email,
         builder: (context, state) {
           return TextFormField(
+            enabled: true,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             focusNode: node,
             validator: (value) {
@@ -280,15 +281,7 @@ class _EmailInput extends StatelessWidget {
               context.read<LoginCubit>().emailChanged(value),
             },
             keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
-              label: const Text('Email Address'),
-              filled: true,
-              fillColor: Colors.white70,
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(45.0),
-                  borderSide:
-                      const BorderSide(width: 0, style: BorderStyle.none)),
-            ),
+            decoration: const InputDecoration(label: Text('Email Address')),
           );
         },
       ),
@@ -312,20 +305,15 @@ class _PasswordInput extends StatelessWidget {
         buildWhen: (previous, current) => previous.password != current.password,
         builder: (context, state) {
           return TextFormField(
+            enabled: true,
             validator: (value) =>
                 state.isEmailValid ? null : 'Password is too short',
             obscureText: true,
             onChanged: (value) =>
                 context.read<LoginCubit>().passwordChanged(value),
             keyboardType: TextInputType.visiblePassword,
-            decoration: InputDecoration(
-              label: const Text('Password'),
-              filled: true,
-              fillColor: Colors.white70,
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(45.0),
-                  borderSide:
-                      const BorderSide(width: 0, style: BorderStyle.none)),
+            decoration: const InputDecoration(
+              label: Text('Password'),
             ),
           );
         },

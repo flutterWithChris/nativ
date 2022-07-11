@@ -22,7 +22,7 @@ import 'package:nativ/data/routes/routes.dart';
 import 'package:nativ/firebase_options.dart';
 import 'package:nativ/view/pages/profile/profile_menu.dart';
 
-import 'package:nativ/view/pages/settings_menu.dart';
+import 'package:nativ/view/pages/settings/settings_menu.dart';
 import 'package:nativ/view/widgets/bottom_nav_bar.dart';
 import 'package:nativ/view/widgets/location_searchbar.dart';
 import 'package:nativ/view/widgets/main_map.dart';

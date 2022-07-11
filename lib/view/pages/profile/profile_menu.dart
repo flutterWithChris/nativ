@@ -6,6 +6,7 @@ import 'package:nativ/bloc/profile/profile_bloc.dart';
 import 'package:nativ/bloc/settings/preferences.dart';
 import 'package:nativ/bloc/settings/theme/bloc/theme_bloc.dart';
 import 'package:nativ/view/pages/profile/connect_page.dart';
+import 'package:nativ/view/screens/chat/chat_screen.dart';
 
 class ProfileMenu extends StatefulWidget {
   const ProfileMenu({Key? key}) : super(key: key);
@@ -95,15 +96,15 @@ class _ProfileMenuState extends State<ProfileMenu> {
                                 ],
                               ),
                               const Padding(
-                                padding: EdgeInsets.only(top: 20, bottom: 20),
+                                padding: EdgeInsets.symmetric(vertical: 12),
                                 child: PublicReviews(),
                               ),
                               const Padding(
-                                padding: EdgeInsets.all(16.0),
+                                padding: EdgeInsets.all(12.0),
                                 child: MySpecialties(),
                               ),
                               const Padding(
-                                padding: EdgeInsets.all(16.0),
+                                padding: EdgeInsets.all(12.0),
                                 child: MyTrips(),
                               )
                             ],
@@ -152,6 +153,7 @@ class MySpecialties extends StatelessWidget {
         }
         if (state is ProfileLoaded) {
           return Card(
+            color: const Color(0xFFb3bccc),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
               child: Align(
@@ -163,7 +165,9 @@ class MySpecialties extends StatelessWidget {
                       child: Text(
                         'My Specialties:',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: Colors.white),
                       ),
                     ),
                     Wrap(spacing: 10,
@@ -214,6 +218,7 @@ class MyTrips extends StatelessWidget {
         }
         if (state is ProfileLoaded) {
           return Card(
+            color: const Color(0xFFbb92cb),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
               child: Align(
@@ -225,7 +230,9 @@ class MyTrips extends StatelessWidget {
                       child: Text(
                         'Places I\'ve traveled:',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18),
                       ),
                     ),
                     Wrap(
@@ -336,12 +343,13 @@ class MainProfileInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      visualDensity: VisualDensity.comfortable,
+      //visualDensity: VisualDensity.comfortable,
       //leading: ProfileIcon(),
       title: Wrap(
         crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 14,
+        spacing: 12,
         children: [
+          // * Name Header
           Text(
             name,
             style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -362,18 +370,17 @@ class MainProfileInfo extends StatelessWidget {
               children: [
                 Wrap(
                   crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 9,
+                  spacing: 8,
                   children: [
                     const Icon(
                       FontAwesomeIcons.mapPin,
                       size: 14,
-                      color: Color(0xFFA4C2A5),
                     ),
                     Text(location),
                   ],
                 ),
                 const SizedBox(
-                  height: 30,
+                  height: 25,
                   child: FittedBox(
                     child: Chip(
                       backgroundColor: Colors.lightBlue,
@@ -388,7 +395,7 @@ class MainProfileInfo extends StatelessWidget {
                 )
               ]),
           const SizedBox(
-            height: 10,
+            height: 5,
           ),
           Text(
             bio,
@@ -409,7 +416,6 @@ class MainProfileInfo extends StatelessWidget {
                     children: const [
                       Text(
                         'Connect ',
-                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Icon(
                         FontAwesomeIcons.connectdevelop,
@@ -426,11 +432,14 @@ class MainProfileInfo extends StatelessWidget {
                 style: Theme.of(context).outlinedButtonTheme.style,
                 label: const Text(
                   'Message Me',
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Get.to(() => const ChatScreen());
+                },
                 icon: const Icon(
                   FontAwesomeIcons.paperPlane,
-                  size: 14,
+                  size: 16,
                 ),
               ),
               SizedBox(

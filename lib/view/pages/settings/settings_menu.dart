@@ -1,8 +1,10 @@
 import 'package:day_night_switcher/day_night_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:nativ/bloc/settings/preferences.dart';
 import 'package:nativ/bloc/settings/theme/bloc/theme_bloc.dart';
+import 'package:nativ/view/pages/settings/app_settings.dart';
 import 'package:nativ/view/themes/app_themes.dart';
 
 class SettingsMenu extends StatelessWidget {
@@ -19,20 +21,31 @@ class SettingsMenu extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: const [
-            SettingsMenuItem(
-              leadingIcon: Icons.person,
-              label: 'Account Info',
-              trailingIcon: Icons.arrow_forward,
+            ListTile(
+              minVerticalPadding: 25,
+              leading: SizedBox(height: 42, child: Icon(Icons.person)),
+              title: Text('Account Info'),
+              trailing: SizedBox(height: 42, child: Icon(Icons.arrow_forward)),
             ),
-            SettingsMenuItem(
-              leadingIcon: Icons.app_settings_alt_outlined,
-              label: 'App Settings',
-              trailingIcon: Icons.arrow_forward,
+            Divider(),
+            ListTile(
+              minVerticalPadding: 25,
+              leading: SizedBox(
+                height: 42,
+                child: Icon(
+                  Icons.app_settings_alt_outlined,
+                ),
+              ),
+              title: Text('App Settings'),
+              trailing: SizedBox(height: 42, child: Icon(Icons.arrow_forward)),
             ),
-            SettingsMenuItem(
-              leadingIcon: Icons.question_mark_rounded,
-              label: 'Support & Help',
-              trailingIcon: Icons.arrow_forward,
+            Divider(),
+            ListTile(
+              minVerticalPadding: 25,
+              leading: SizedBox(
+                  height: 42, child: Icon(Icons.question_mark_rounded)),
+              title: Text('Support & Help'),
+              trailing: SizedBox(child: Icon(Icons.arrow_forward)),
             ),
           ],
         ),
@@ -77,31 +90,31 @@ class SettingsMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: context.read<ThemeBloc>(),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ListTile(
-            minVerticalPadding: 25,
-            leading: SizedBox(
-              height: 42,
-              child: Icon(
-                leadingIcon,
-              ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ListTile(
+          onTap: () {
+            Get.to(() => const AppSettings());
+          },
+          minVerticalPadding: 25,
+          leading: SizedBox(
+            height: 42,
+            child: Icon(
+              leadingIcon,
             ),
-            title: Text(
-              label,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium!
-                  .copyWith(fontWeight: FontWeight.bold),
-            ),
-            trailing: SizedBox(height: 42, child: Icon(trailingIcon)),
           ),
-          const Divider(),
-        ],
-      ),
+          title: Text(
+            label,
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium!
+                .copyWith(fontWeight: FontWeight.bold),
+          ),
+          trailing: SizedBox(height: 42, child: Icon(trailingIcon)),
+        ),
+        const Divider(),
+      ],
     );
   }
 }
