@@ -73,6 +73,7 @@ dependencies:
   date_format: ^2.0.6
   flutter_firebase_chat_core: ^1.6.2
   intl: ^0.17.0
+  sticky_headers: ^0.3.0+2
 
 
 

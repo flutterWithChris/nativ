@@ -40,7 +40,7 @@ class _MainMapState extends State<MainMap> {
     final LocationBloc locationBloc = BlocProvider.of<LocationBloc>(context);
     super.initState();
     locationSubscription = locationBloc.selectedLocation.stream.listen((place) {
-      //_goToPlace(place, mapController);
+      _goToPlace(place, mapController);
     });
   }
 

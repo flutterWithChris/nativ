@@ -233,15 +233,19 @@ class SignupButton extends StatelessWidget {
       onPressed: () {
         Navigator.of(context).push<void>(SignupScreen.route());
       },
-      child: const Text.rich(
+      child: Text.rich(
         TextSpan(
-          style: TextStyle(fontSize: 16),
+          style: const TextStyle(fontSize: 16),
           children: [
+            const TextSpan(
+                text: 'New? ',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                )),
             TextSpan(
-                text: 'New? ', style: TextStyle(fontWeight: FontWeight.bold)),
-            TextSpan(
-              text: 'Sign Up',
-            ),
+                text: 'Sign Up',
+                style: TextStyle(
+                    color: Theme.of(context).appBarTheme.backgroundColor)),
           ],
         ),
         textAlign: TextAlign.left,

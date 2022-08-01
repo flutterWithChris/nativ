@@ -4,6 +4,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:nativ/bloc/location/location_bloc.dart';
+import 'package:nativ/data/model/place.dart';
 
 class LocationSearchBar extends StatefulWidget {
   String? hintText;
@@ -151,30 +152,24 @@ class NativListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: AlignmentDirectional.topCenter,
-      //mainAxisSize: MainAxisSize.min,
-      children: [
-        const SearchStickyHeader(),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(8.0, 75.0, 8.0, 8.0),
-          child: NativListTiles(scrollController: scrollController),
-        ),
-      ],
-    );
+    DraggableScrollableController controller = DraggableScrollableController();
+    return DraggableScrollableSheet(
+        controller: controller,
+        expand: false,
+        initialChildSize: 0.33,
+        minChildSize: 0.0,
+        builder: ((context, scrollController) {
+          return Column(
+            //mainAxisSize: MainAxisSize.min,
+            children: [
+              const SingleChildScrollView(child: SearchStickyHeader()),
+              Expanded(
+                  child: NativListTiles(scrollController: scrollController)),
+            ],
+          );
+        }));
   }
 }
-
-Widget buildDragHandle() => GestureDetector(
-      child: Center(
-        child: Container(
-          width: 30,
-          height: 5,
-          decoration: BoxDecoration(
-              color: Colors.grey[300], borderRadius: BorderRadius.circular(12)),
-        ),
-      ),
-    );
 
 class SearchStickyHeader extends StatelessWidget {
   const SearchStickyHeader({
@@ -183,45 +178,109 @@ class SearchStickyHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // color: Colors.lightBlue,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 3.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(
-              height: 12,
-            ),
-            buildDragHandle(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  '32 Nativ\'s Found Nearby',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.black87),
-                ),
-                SizedBox(
-                  height: 40,
-                  width: 100,
-                  child: FittedBox(
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                          fixedSize: const Size(100, 40)),
-                      onPressed: () {
-                        print('filter pressed');
-                      },
-                      child: const Text(
-                        'Filter',
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 3.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(
+            height: 12,
+          ),
+          const DragHandle(),
+          StreamBuilder<Place>(
+              stream: context.read<LocationBloc>().selectedLocation.stream,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  Place searchedPlace = snapshot.data as Place;
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text.rich(
+                        TextSpan(
+                            style: Theme.of(context).textTheme.titleSmall,
+                            text: '32 Nativ\'s Near',
+                            children: [
+                              TextSpan(
+                                  text: ' · ${searchedPlace.name}',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold)),
+                            ]),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.black87),
+                      ),
+                      SizedBox(
+                        height: 40,
+                        width: 100,
+                        child: FittedBox(
+                          child: ElevatedButton(
+                            style: OutlinedButton.styleFrom(
+                                fixedSize: const Size(100, 40)),
+                            onPressed: () {
+                              print('filter pressed');
+                            },
+                            child: const Text(
+                              'Filter',
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text.rich(
+                      TextSpan(
+                          style: Theme.of(context).textTheme.titleSmall,
+                          text: '32 Nativ\'s Near',
+                          children: const [
+                            TextSpan(
+                                text: ' · Nowhere!',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                          ]),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.black87),
+                    ),
+                    SizedBox(
+                      height: 40,
+                      width: 100,
+                      child: FittedBox(
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                              fixedSize: const Size(100, 40)),
+                          onPressed: () {
+                            print('filter pressed');
+                          },
+                          child: const Text(
+                            'Filter',
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+                  ],
+                );
+              }),
+        ],
+      ),
+    );
+  }
+}
+
+class DragHandle extends StatelessWidget {
+  const DragHandle({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        width: 30,
+        height: 5,
+        decoration: BoxDecoration(
+            color: Colors.grey[300], borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
@@ -250,7 +309,10 @@ class NativListTiles extends StatelessWidget {
                 backgroundImage: NetworkImage(
                     'https://www.zbrushcentral.com/uploads/default/original/4X/7/9/6/7966865da1c1203fd5250ab05bb1fc00ba8133e9.jpeg'),
               ),
-              title: const Text('Thorin Oakenshield'),
+              title: const Text(
+                'Thorin Oakenshield',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               subtitle: const Text('Auckland, NZ'),
               trailing: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
@@ -259,6 +321,7 @@ class NativListTiles extends StatelessWidget {
                   Text('4.5'),
                   Icon(
                     Icons.star,
+                    size: 16,
                     color: Colors.yellow,
                   ),
                 ],

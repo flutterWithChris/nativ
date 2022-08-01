@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nativ/bloc/onboarding/onboarding_bloc.dart';
 import 'package:nativ/bloc/signup/signup_cubit.dart';
 import 'package:nativ/data/model/user.dart';
+import 'package:nativ/main.dart';
 
 class SignupBasicInfoPage extends StatelessWidget {
   static GlobalKey<FormState> signupformKey = GlobalKey<FormState>();
@@ -17,44 +18,48 @@ class SignupBasicInfoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: AlignmentDirectional.center,
-      children: [
-        /* Image.asset(
-          'lib/assets/mapbox-background.png',
-          fit: BoxFit.cover,
-          height: MediaQuery.of(context).size.height,
-          alignment: Alignment.centerRight,
-        ), */
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40),
+    return Scaffold(
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(50.0),
+        child: MainAppBar(),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 40),
+        child: SingleChildScrollView(
           child: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                // crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Form(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 120),
+                  child: Form(
                     key: signupformKey,
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      //crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 24.0),
-                          child: Text('Email Signup',
-                              style:
-                                  Theme.of(context).textTheme.headlineMedium),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 25.0, horizontal: 15.0),
+                          child: Text('Hey! Let\'s get you signed up.',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineMedium!
+                                  .copyWith(
+                                    color: Theme.of(context)
+                                        .appBarTheme
+                                        .backgroundColor,
+                                    fontWeight: FontWeight.bold,
+                                  )),
                         ),
-
                         EmailInput(),
                         const SizedBox(
                           height: 5,
                         ),
-                        // const ConfirmEmailInput(),
                         Column(
                           mainAxisSize: MainAxisSize.min,
-                          //   crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             const SizedBox(
                               height: 15,
@@ -78,20 +83,20 @@ class SignupBasicInfoPage extends StatelessWidget {
                                 pageController: pageController),
                           ],
                         ),
-                        LinearProgressIndicator(
-                          backgroundColor: Colors.grey,
-                          color: Theme.of(context).appBarTheme.backgroundColor,
-                          value: 1,
-                        )
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+                LinearProgressIndicator(
+                  backgroundColor: Colors.grey,
+                  color: Theme.of(context).appBarTheme.backgroundColor,
+                  value: 1,
+                ),
+              ],
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }
@@ -209,8 +214,6 @@ class _GoogleSignupButtonState extends State<GoogleSignupButton> {
               widget.pageController.page!.toInt() + 1,
               duration: const Duration(milliseconds: 500),
               curve: Curves.easeInOut);
-          /*  pageController.nextPage(
-              duration: const Duration(seconds: 1), curve: Curves.easeInOut); */
         }
       },
       buildWhen: (previous, current) => previous.status != current.status,
@@ -219,45 +222,54 @@ class _GoogleSignupButtonState extends State<GoogleSignupButton> {
             ? const CircularProgressIndicator()
             : Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15),
-                child: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.blue,
-                  child: IconButton(
-                    iconSize: 20,
-                    icon: Image.network(
-                      'http://pngimg.com/uploads/google/google_PNG19635.png',
-                      errorBuilder: (context, error, stackTrace) => const Icon(
-                        FontAwesomeIcons.google,
-                        color: Colors.black54,
+                child: InkWell(
+                  child: CircleAvatar(
+                    radius: 21,
+                    backgroundColor: Colors.grey.shade400,
+                    child: CircleAvatar(
+                      radius: 25,
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.blue,
+                      child: IconButton(
+                        iconSize: 32,
+                        icon: Image.network(
+                          'http://pngimg.com/uploads/google/google_PNG19635.png',
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(
+                            FontAwesomeIcons.google,
+                            color: Colors.black54,
+                          ),
+                        ),
+                        splashColor: Colors.white,
+                        onPressed: () async {
+                          GoogleProviderConfiguration(
+                            clientId: googleClientId,
+                          );
+                          await context
+                              .read<SignupCubit>()
+                              .signUpWithGoogleCredentials();
+
+                          if (!mounted) return;
+                          User user = User(
+                              id: context.read<SignupCubit>().state.user!.uid,
+                              name: '',
+                              location: '',
+                              email:
+                                  context.read<SignupCubit>().state.user!.email,
+                              username: '',
+                              reviews: const {},
+                              specialties: const [],
+                              types: const [],
+                              bio: '',
+                              photo: '',
+                              visitedPlaces: const []);
+
+                          context
+                              .read<OnboardingBloc>()
+                              .add(StartOnboarding(user: user));
+                        },
                       ),
                     ),
-                    splashColor: Colors.white,
-                    onPressed: () async {
-                      GoogleProviderConfiguration(
-                        clientId: googleClientId,
-                      );
-                      await context
-                          .read<SignupCubit>()
-                          .signUpWithGoogleCredentials();
-
-                      if (!mounted) return;
-                      User user = User(
-                          id: context.read<SignupCubit>().state.user!.uid,
-                          name: '',
-                          location: '',
-                          email: context.read<SignupCubit>().state.user!.email,
-                          username: '',
-                          reviews: const {},
-                          specialties: const [],
-                          types: const [],
-                          bio: '',
-                          photo: '',
-                          visitedPlaces: const []);
-
-                      context
-                          .read<OnboardingBloc>()
-                          .add(StartOnboarding(user: user));
-                    },
                   ),
                 ),
               );

@@ -160,12 +160,28 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final PanelController panelController = PanelController();
+    ScrollController scrollController = ScrollController();
     final user = context.select((AppBloc bloc) => bloc.state.user);
     return BlocBuilder<AppBloc, AppState>(
       builder: (context, state) {
         return Scaffold(
+          bottomSheet: StreamBuilder(
+            stream: context.read<LocationBloc>().selectedLocation.stream,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                return NativListView(
+                  scrollController: scrollController,
+                );
+              } else {
+                return Container(
+                  height: 1,
+                );
+              }
+            },
+          ),
           drawer: Drawer(
             //backgroundColor: Colors.indigo,
+
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 50),
               child: Column(
@@ -198,25 +214,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 return Stack(
                   children: [
                     BlocBuilder<LocationBloc, LocationState>(
-                      builder: (context, state) {
-                        if (state is LocationLoading) {
-                          return SlidingUpPanel(
-                            controller: panelController,
-                            defaultPanelState: PanelState.CLOSED,
-                            parallaxEnabled: true,
-                            parallaxOffset: 1.0,
-                            maxHeight:
-                                MediaQuery.of(context).size.height * 0.81,
-                            minHeight: 150,
-                            panelBuilder: ((sc) => NativListView(
-                                  scrollController: sc,
-                                )),
-                            body: const MainMap(),
-                          );
-                        }
-                        return const MainMap();
-                      },
-                    ),
+                        builder: (context, state) {
+                      return const MainMap();
+                    }),
                   ],
                 );
               } else if (state.bottomNavBarItem == BottomNavBarItem.profile) {

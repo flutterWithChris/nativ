@@ -12,7 +12,7 @@ final appThemeData = {
     useMaterial3: true,
     // * Colors
     scaffoldBackgroundColor: const Color(0xFFf9f9f8),
-    cardColor: const Color(0xFF7b7b84),
+    //cardColor: const Color(0xFF7b7b84),
     iconTheme: const IconThemeData(color: Color(0xfff37d64)),
     chipTheme: const ChipThemeData(backgroundColor: Color(0xffDED0BF)),
     colorSchemeSeed: const Color(0xffBFD5DF),
@@ -56,16 +56,17 @@ final appThemeData = {
     listTileTheme:
         const ListTileThemeData(iconColor: Colors.white, enableFeedback: true),
     iconTheme: const IconThemeData(color: Colors.white),
-    drawerTheme: DrawerThemeData(
-        backgroundColor: const Color(0xff515A5E).withAlpha(255)),
-    appBarTheme: AppBarTheme(
-        actionsIconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: const Color(0xff515A5E).withAlpha(255),
-        titleTextStyle: const TextStyle(color: Colors.white, fontSize: 22),
+    drawerTheme: const DrawerThemeData(backgroundColor: Color(0xff18465A)),
+    bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: const Color.fromARGB(255, 5, 4, 12).withOpacity(0.9)),
+    appBarTheme: const AppBarTheme(
+        actionsIconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: Color.fromARGB(255, 5, 4, 12),
+        titleTextStyle: TextStyle(color: Colors.white, fontSize: 22),
         systemOverlayStyle: SystemUiOverlayStyle.light),
     //  canvasColor: const Color(0xff515A5E),
     // backgroundColor: const Color(0xff515A5E),
-    scaffoldBackgroundColor: const Color(0xff838282).withAlpha(255),
+    scaffoldBackgroundColor: const Color.fromARGB(255, 5, 4, 12),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: Colors.white70,
@@ -87,7 +88,10 @@ final appThemeData = {
     useMaterial3: true,
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
+        primary: const Color(0xfff37d64),
+        onPrimary: Colors.white,
         textStyle: const TextStyle(
+          color: Colors.white,
           fontSize: 16,
           fontWeight: FontWeight.bold,
         ),

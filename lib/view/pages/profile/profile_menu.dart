@@ -68,7 +68,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
                       children: [
                         // * Header Image
                         AspectRatio(
-                          aspectRatio: 1.91 / 1,
+                          aspectRatio: 1 / 1,
                           child: Image.network(
                             'https://static.euronews.com/articles/stories/06/25/84/50/1200x675_cmsv2_f71b6679-918e-5672-8b87-8f3e17af759e-6258450.jpg',
                             fit: BoxFit.cover,

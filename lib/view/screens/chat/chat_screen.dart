@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nativ/bloc/profile/profile_bloc.dart';
 import 'package:nativ/main.dart';
 import 'package:nativ/view/widgets/bottom_nav_bar.dart';
@@ -81,6 +82,13 @@ class _ChatScreenState extends State<ChatScreen> {
             bottomNavigationBar: BottomNavBar(index: 0),
             body: Chat(
               theme: DefaultChatTheme(
+                  sendButtonIcon: const CircleAvatar(
+                    radius: 60,
+                    child: Icon(
+                      FontAwesomeIcons.paperPlane,
+                      size: 14,
+                    ),
+                  ),
                   inputTextColor: Colors.black87,
                   primaryColor: const Color(0xFFf37d64),
                   //inputMargin: const EdgeInsets.only(bottom: 16),

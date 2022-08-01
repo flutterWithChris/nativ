@@ -18,21 +18,19 @@ class SetLocationScreen extends StatelessWidget {
     return Stack(
       alignment: AlignmentDirectional.center,
       children: [
-        Image.asset(
-          'lib/assets/mapbox-background.png',
-          fit: BoxFit.cover,
-          height: MediaQuery.of(context).size.height,
-          alignment: Alignment.centerRight,
-        ),
         ListView(
           shrinkWrap: true,
-          //mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   'Where Are You From?',
-                  style: Theme.of(context).textTheme.headlineSmall,
+                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).appBarTheme.backgroundColor,
+                      ),
                 ),
                 FractionallySizedBox(
                   widthFactor: 0.9,
@@ -85,12 +83,17 @@ class SetLocationScreen extends StatelessWidget {
                                 child: FractionallySizedBox(
                                   widthFactor: 0.9,
                                   child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           const Padding(
                                             padding: EdgeInsets.symmetric(
-                                                horizontal: 10),
+                                                horizontal: 20),
                                             child: Icon(
                                               Icons.check_circle,
                                               color: Colors.blueAccent,
