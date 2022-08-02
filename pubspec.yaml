@@ -74,6 +74,8 @@ dependencies:
   flutter_firebase_chat_core: ^1.6.2
   intl: ^0.17.0
   sticky_headers: ^0.3.0+2
+  flutter_map_marker_cluster: ^0.5.0
+  flutter_map_marker_popup: ^2.2.1
 
 
 

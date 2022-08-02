@@ -71,7 +71,7 @@ class _LocationSearchBarState extends State<RegionAndCitySearchBar> {
         }
 
         if (query == '') {
-          controller.close();
+          //controller.close();
         }
       },
       transition: CircularFloatingSearchBarTransition(),

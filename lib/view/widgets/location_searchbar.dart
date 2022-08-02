@@ -156,7 +156,7 @@ class NativListView extends StatelessWidget {
     return DraggableScrollableSheet(
         controller: controller,
         expand: false,
-        initialChildSize: 0.33,
+        initialChildSize: 0.36,
         minChildSize: 0.0,
         builder: ((context, scrollController) {
           return Column(
