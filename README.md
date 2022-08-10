@@ -1,6 +1,6 @@
 # nativ
 
-### Connecting tourists with locals from their destination to make travel plans easier, safer, & more authentic.
+### Connecting tourists & locals to make easier, safer, & more authentic travel plans.
 
 ## Features
 - Find Nativ's by **Location Search** or **Map View**. 🔍🗺️
