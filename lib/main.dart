@@ -30,16 +30,25 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
-  await dotenv.load();
+  Future<void> dotLoad() async => await dotenv.load();
+  Future<void> prefsLoad() async => await SharedPrefs().init();
+  Future<FirebaseApp> startFire() async => await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform);
   WidgetsFlutterBinding.ensureInitialized();
-  await SharedPrefs().init();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runApp(const Center(
+    child: CircularProgressIndicator(),
+  ));
+  await Future.wait([
+    dotLoad(),
+    prefsLoad(),
+    startFire(),
+    initializeDateFormatting(),
+  ]);
   final authRepository = AuthRepository();
   ErrorWidget.builder = (FlutterErrorDetails details) {
     return const Material();
   };
-  initializeDateFormatting()
-      .then((_) => runApp(MyApp(authRepository: authRepository)));
+  runApp(MyApp(authRepository: authRepository));
 }
 
 class MyApp extends StatelessWidget {

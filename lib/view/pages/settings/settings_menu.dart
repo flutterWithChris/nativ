@@ -6,6 +6,7 @@ import 'package:nativ/bloc/settings/preferences.dart';
 import 'package:nativ/bloc/settings/theme/bloc/theme_bloc.dart';
 import 'package:nativ/view/pages/settings/app_settings.dart';
 import 'package:nativ/view/themes/app_themes.dart';
+import 'package:settings_ui/settings_ui.dart';
 
 class SettingsMenu extends StatelessWidget {
   const SettingsMenu({Key? key}) : super(key: key);
@@ -15,42 +16,29 @@ class SettingsMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 50),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: const [
-            ListTile(
-              minVerticalPadding: 25,
-              leading: SizedBox(height: 42, child: Icon(Icons.person)),
-              title: Text('Account Info'),
-              trailing: SizedBox(height: 42, child: Icon(Icons.arrow_forward)),
-            ),
-            Divider(),
-            ListTile(
-              minVerticalPadding: 25,
-              leading: SizedBox(
-                height: 42,
-                child: Icon(
-                  Icons.app_settings_alt_outlined,
-                ),
-              ),
-              title: Text('App Settings'),
-              trailing: SizedBox(height: 42, child: Icon(Icons.arrow_forward)),
-            ),
-            Divider(),
-            ListTile(
-              minVerticalPadding: 25,
-              leading: SizedBox(
-                  height: 42, child: Icon(Icons.question_mark_rounded)),
-              title: Text('Support & Help'),
-              trailing: SizedBox(child: Icon(Icons.arrow_forward)),
-            ),
-          ],
-        ),
-      ),
-    );
+        body: SettingsList(
+      darkTheme: SettingsThemeData(
+          titleTextColor: Colors.white,
+          settingsSectionBackground: Colors.cyan,
+          settingsListBackground: Theme.of(context).scaffoldBackgroundColor,
+          settingsTileTextColor: Colors.white),
+      lightTheme: SettingsThemeData(
+          settingsListBackground: Theme.of(context).scaffoldBackgroundColor,
+          settingsSectionBackground: const Color(0xFFb3bccc)),
+      sections: [
+        SettingsSection(title: const Text('Account'), tiles: [
+          SettingsTile.navigation(
+              leading: const Icon(Icons.email_rounded),
+              title: const Text('Email')),
+          SettingsTile.navigation(
+              leading: const Icon(Icons.phone),
+              title: const Text('Phone Number')),
+          SettingsTile.navigation(
+              leading: const Icon(Icons.logout_rounded),
+              title: const Text('Sign Out')),
+        ])
+      ],
+    ));
   }
 }
 
