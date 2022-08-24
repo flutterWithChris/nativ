@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:infinite_carousel/infinite_carousel.dart';
 import 'package:nativ/bloc/profile/profile_bloc.dart';
 import 'package:nativ/bloc/settings/preferences.dart';
 import 'package:nativ/bloc/settings/theme/bloc/theme_bloc.dart';
+import 'package:nativ/data/model/user.dart';
 import 'package:nativ/view/pages/profile/connect_page.dart';
 import 'package:nativ/view/screens/chat/chat_screen.dart';
 
@@ -38,82 +40,58 @@ class _ProfileMenuState extends State<ProfileMenu> {
           if (state is ProfileLoaded) {
             return BlocProvider.value(
               value: context.read<ThemeBloc>(),
-              child: Scaffold(
-                body: Stack(
-                  alignment: AlignmentDirectional.center,
-                  children: [
-                    /*   BlocBuilder<ThemeBloc, ThemeState>(
-                      buildWhen: (previous, current) =>
-                          previous.themeData != current.themeData,
-                      builder: (context, state) {
-                        getThemeState();
-                       if (themeIndex == 1) {
-                          return Image.asset(
-                            'lib/assets/mapbox-background-dark.png',
-                            fit: BoxFit.cover,
-                            height: MediaQuery.of(context).size.height,
-                            alignment: Alignment.centerRight,
-                          );
-                        }
-                        return Image.asset(
-                          'lib/assets/mapbox-background.png',
+              child: SafeArea(
+                child: Scaffold(
+                  body: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      // * Header Image
+                      AspectRatio(
+                        aspectRatio: 1.618 / 1,
+                        child: Image.network(
+                          'http://img1.wikia.nocookie.net/__cb20121227125326/lotr/images/1/16/Thorin_2.jpg',
+                          alignment: Alignment.topCenter,
+                          //   isAntiAlias: true,
+                          // filterQuality: FilterQuality.high,
                           fit: BoxFit.cover,
-                          height: MediaQuery.of(context).size.height,
-                          alignment: Alignment.centerRight,
-                        );
-                      },
-                    ), */
-                    ListView(
-                      shrinkWrap: true,
-                      children: [
-                        // * Header Image
-                        AspectRatio(
-                          aspectRatio: 1 / 1,
-                          child: Image.network(
-                            'http://img1.wikia.nocookie.net/__cb20121227125326/lotr/images/1/16/Thorin_2.jpg',
-                            fit: BoxFit.cover,
-                          ),
                         ),
+                      ),
 
-                        // * Main Content
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0, vertical: 10.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Stack(
-                                alignment: AlignmentDirectional.topEnd,
-                                children: [
-                                  MainProfileInfo(
-                                      name: state.user.name!,
-                                      location: state.user.location!,
-                                      bio: state.user.bio!),
-                                  const Padding(
-                                    padding:
-                                        EdgeInsets.only(right: 18, top: 8.0),
-                                    child: ProfileIcon(),
-                                  ),
-                                ],
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 12),
-                                child: PublicReviews(),
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.all(12.0),
-                                child: MySpecialties(),
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.all(12.0),
-                                child: MyTrips(),
-                              )
-                            ],
-                          ),
+                      // * Main Content
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0, vertical: 10.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Stack(
+                              alignment: AlignmentDirectional.topEnd,
+                              children: [
+                                MainProfileInfo(
+                                    name: state.user.name!,
+                                    location: state.user.location!,
+                                    bio: state.user.bio!),
+                                const Padding(
+                                  padding: EdgeInsets.only(right: 18, top: 8.0),
+                                  child: ProfileIcon(),
+                                ),
+                              ],
+                            ),
+                            const MySpecialties(),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 12),
+                              child: PublicReviews(),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.all(12.0),
+                              child: MyTrips(),
+                            )
+                          ],
                         ),
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
@@ -153,44 +131,51 @@ class MySpecialties extends StatelessWidget {
           return const CircularProgressIndicator();
         }
         if (state is ProfileLoaded) {
-          return Card(
-            color: const Color(0xFFb3bccc),
+          return SizedBox(
+            height: 175,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0),
               child: Align(
                 alignment: Alignment.center,
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 10),
-                      child: Text(
-                        'My Specialties:',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: Colors.white),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0, bottom: 12.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text('My Specialties:',
+                            style: Theme.of(context).textTheme.titleLarge!),
                       ),
                     ),
-                    Wrap(spacing: 10,
+                    Expanded(
+                      child: InfiniteCarousel.builder(
+                        velocityFactor: 0.5,
+                        itemCount: 5,
+                        itemExtent: 120,
+                        itemBuilder: (context, itemIndex, realIndex) {
+                          List<SpecialtyIcon> specialtyIcons = [
+                            const SpecialtyIcon(
+                                icon: FontAwesomeIcons.utensils,
+                                label: 'Local Food'),
+                            const SpecialtyIcon(
+                                icon: FontAwesomeIcons.fish, label: 'Wildlife'),
+                            const SpecialtyIcon(
+                                icon: FontAwesomeIcons.masksTheater,
+                                label: 'Entertainment'),
+                            const SpecialtyIcon(
+                                icon: FontAwesomeIcons.map,
+                                label: 'Navigation'),
+                            const SpecialtyIcon(
+                                icon: FontAwesomeIcons.tree, label: 'Nature'),
+                          ];
+                          return specialtyIcons[itemIndex];
+                          return Container();
+                        },
                         //crossAxisAlignment: WrapCrossAlignment.center,
-                        children: const [
-                          Chip(
-                            label: Text('test'),
-                            backgroundColor: Colors.white54,
-                            avatar: Icon(
-                              FontAwesomeIcons.utensils,
-                              size: 20,
-                            ),
-                          ),
-                          Chip(
-                            label: Text('test'),
-                            backgroundColor: Colors.white54,
-                            avatar: Icon(
-                              FontAwesomeIcons.masksTheater,
-                              size: 20,
-                            ),
-                          ),
-                        ]),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -218,45 +203,47 @@ class MyTrips extends StatelessWidget {
           return const CircularProgressIndicator();
         }
         if (state is ProfileLoaded) {
+          User currentUser = state.user;
           return Card(
             color: const Color(0xFFbb92cb),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
               child: Align(
-                alignment: Alignment.center,
+                //alignment: Alignment.center,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Padding(
                       padding: EdgeInsets.only(bottom: 10),
-                      child: Text(
-                        'Places I\'ve traveled:',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
+                      child: Center(
+                        child: Text(
+                          'Places I\'ve traveled:',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                        ),
                       ),
                     ),
                     Wrap(
-                        spacing: 10,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: const [
+                      spacing: 12.0,
+                      children: [
+                        for (int i = 0;
+                            i < currentUser.visitedPlaces!.length;
+                            i++)
                           Chip(
-                            backgroundColor: Colors.white54,
-                            label: Text('test'),
-                            avatar: Icon(
+                            visualDensity: VisualDensity.compact,
+                            labelStyle: const TextStyle(color: Colors.white),
+                            backgroundColor: const Color.fromARGB(255, 5, 4, 12)
+                                .withOpacity(0.9),
+                            label: Text(currentUser.visitedPlaces![i]),
+                            avatar: const Icon(
                               FontAwesomeIcons.earthAmericas,
-                              size: 20,
+                              size: 18,
                             ),
                           ),
-                          Chip(
-                            backgroundColor: Colors.white54,
-                            label: Text('test'),
-                            avatar: Icon(
-                              FontAwesomeIcons.earthEurope,
-                              size: 20,
-                            ),
-                          ),
-                        ]),
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -283,23 +270,27 @@ class SpecialtyIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 100,
-      width: 100,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            size: 40,
-          ),
-          const SizedBox(
-            height: 7,
-          ),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-          ),
-        ],
+      width: 115,
+      child: Card(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 40,
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: Colors.black87, fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -312,19 +303,24 @@ class ReviewCarousel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(children: const [
-          CircleAvatar(
+        padding: const EdgeInsets.all(12.0),
+        child: Row(children: [
+          const CircleAvatar(
             radius: 25,
             backgroundImage: NetworkImage(
                 'https://bustickets.com/wp-content/uploads/2019/09/solo-travel-backpack-tips.jpg'),
           ),
-          SizedBox(
+          const SizedBox(
             width: 15,
           ),
           Flexible(
             child: Text(
-                '“Thorin is the BEST nativ around. He took us to incredible & authentic restaurants & guided an awesome hike.” \n -Jane Walenda, Traveler'),
+              '“Thorin is the BEST nativ around. He took us to incredible & authentic restaurants & guided an awesome hike.” \n -Jane Walenda, Traveler',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium!
+                  .copyWith(color: Colors.black87),
+            ),
           )
         ]),
       ),

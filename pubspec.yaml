@@ -78,6 +78,7 @@ dependencies:
   flutter_map_marker_popup: ^2.2.1
   settings_ui: ^2.0.2
   syncfusion_flutter_datepicker: ^20.2.45
+  infinite_carousel: ^1.0.2
 
 
 
