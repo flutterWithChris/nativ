@@ -70,7 +70,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
                         AspectRatio(
                           aspectRatio: 1 / 1,
                           child: Image.network(
-                            'https://static.euronews.com/articles/stories/06/25/84/50/1200x675_cmsv2_f71b6679-918e-5672-8b87-8f3e17af759e-6258450.jpg',
+                            'http://img1.wikia.nocookie.net/__cb20121227125326/lotr/images/1/16/Thorin_2.jpg',
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -78,7 +78,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
                         // * Main Content
                         Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 12.0, vertical: 14.0),
+                              horizontal: 8.0, vertical: 10.0),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -90,7 +90,8 @@ class _ProfileMenuState extends State<ProfileMenu> {
                                       location: state.user.location!,
                                       bio: state.user.bio!),
                                   const Padding(
-                                    padding: EdgeInsets.only(right: 18),
+                                    padding:
+                                        EdgeInsets.only(right: 18, top: 8.0),
                                     child: ProfileIcon(),
                                   ),
                                 ],

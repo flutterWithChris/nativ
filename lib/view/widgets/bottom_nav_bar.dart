@@ -39,8 +39,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
               data: NavigationBarThemeData(
                   labelBehavior:
                       NavigationDestinationLabelBehavior.onlyShowSelected,
-                  height: 70,
-                  indicatorColor: Colors.white.withOpacity(0.5),
+                  height: 80,
+                  indicatorColor: const Color(0xfff37d64),
                   labelTextStyle: MaterialStateProperty.all(const TextStyle(
                       fontSize: 12, fontWeight: FontWeight.bold))),
               child: NavigationBar(
@@ -66,8 +66,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   labelBehavior:
                       NavigationDestinationLabelBehavior.onlyShowSelected,
                   height: 70,
-                  indicatorColor: const Color(0xff93A3AB),
-                  iconTheme: const MaterialStatePropertyAll(IconThemeData(
+                  indicatorColor: const Color(0xfff37d64),
+                  iconTheme: MaterialStateProperty.all(const IconThemeData(
                     color: Colors.white,
                   )),
                   labelTextStyle: MaterialStateProperty.all(const TextStyle(

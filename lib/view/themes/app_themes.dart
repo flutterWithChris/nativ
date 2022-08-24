@@ -50,12 +50,12 @@ final appThemeData = {
         displayColor: const Color(0xFF333333)),
   ),
   AppTheme.Dark: ThemeData(
-    outlinedButtonTheme: const OutlinedButtonThemeData(
+    outlinedButtonTheme: OutlinedButtonThemeData(
         style: ButtonStyle(
-            foregroundColor: MaterialStatePropertyAll(Colors.white))),
-    listTileTheme:
-        const ListTileThemeData(iconColor: Colors.white, enableFeedback: true),
-    iconTheme: const IconThemeData(color: Colors.white),
+            foregroundColor: MaterialStateProperty.all(Colors.white))),
+    listTileTheme: const ListTileThemeData(
+        iconColor: Color(0xfff37d64), enableFeedback: true),
+    iconTheme: const IconThemeData(color: Color(0xfff37d64)),
     drawerTheme: const DrawerThemeData(backgroundColor: Color(0xff18465A)),
     bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: const Color.fromARGB(255, 5, 4, 12).withOpacity(0.9)),
@@ -90,8 +90,8 @@ final appThemeData = {
       style: ElevatedButton.styleFrom(
         primary: const Color(0xfff37d64),
         onPrimary: Colors.white,
-        textStyle: const TextStyle(
-          color: Colors.white,
+        textStyle: TextStyle(
+          fontFamily: GoogleFonts.nunito().fontFamily,
           fontSize: 16,
           fontWeight: FontWeight.bold,
         ),
