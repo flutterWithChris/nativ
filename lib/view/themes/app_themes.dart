@@ -67,6 +67,9 @@ final appThemeData = {
     //  canvasColor: const Color(0xff515A5E),
     // backgroundColor: const Color(0xff515A5E),
     scaffoldBackgroundColor: const Color.fromARGB(255, 5, 4, 12),
+    textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all(Colors.white))),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: Colors.white70,
@@ -81,7 +84,7 @@ final appThemeData = {
       backgroundColor: Colors.transparent,
     ),
     cardTheme: const CardTheme(
-      color: Color(0xffbb92cb),
+      color: Color(0xFFf9f9f8),
     ),
     // primaryColor: const Color(0xff515A5E),
     colorSchemeSeed: const Color(0xff515A5E).withAlpha(255),
